@@ -23,8 +23,6 @@ public class MandelbrotTest {
 	
 	@Test
 	public void test(){
-		assertEquals(0, _points[384][384]);
-		assertEquals(3, _points[100][150]);
 		assertEquals(_max, _points[256][256]);
 		assertEquals(0, _points[511][511]);
 	}
