@@ -3,10 +3,6 @@ package code.Fractals;
 public class Mandelbrot {
 	
 	private int _max;
-	private final double MIN_X = -2.15;
-	private final double MAX_X = 0.6;
-	private final double MIN_Y = -1.3;
-	private final double MAX_Y = 1.3;
 	
 	/**
 	 * Automagically sets the max to 255.  Max can be set with setMax(int max)
@@ -32,8 +28,8 @@ public class Mandelbrot {
 		for(int rows = 0; rows < 512; rows++){ // y
 			for(int cols = 0; cols < 512; cols++){ // x
 				// convert rows and cols to cartesian plot
-				xCalc = ((4.0) / 512.0) * cols - 2;
-				yCalc = ((4.0) / 512.0) * rows - 2;
+				xCalc = ((2.75) / 512.0) * cols - 2.15;
+				yCalc = ((2.6) / 512.0) * rows - 1.3;
 				tX = 0;
 				tY = 0;
 				
