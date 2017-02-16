@@ -30,11 +30,11 @@ public class Julia {
 				// convert rows and cols to cartesian plot
 				xCalc = ((3.5) / 512.0) * cols - 1.7;
 				yCalc = ((2.0) / 512.0) * rows - 1.0;
-				tX = 0;
-				tY = 0;
+				tX = xCalc;
+				tY = yCalc;
 				
 				int passes = -1;
-				dist = Math.sqrt(tX*tX + tY*tY);
+				dist = 0;//Math.sqrt(tX*tX + tY*tY);
 				while(dist <= 2 && passes < _max){
 					tmp = tX*tX - tY*tY + -0.72689;
 					tY = 2.0 * tX * tY + 0.188887;
