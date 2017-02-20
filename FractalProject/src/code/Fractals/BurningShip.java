@@ -128,4 +128,41 @@ public class BurningShip {
 		return _max;
 	}
 
+	/**
+	 * Returns the X coordinate for a given column
+	 * @param col
+	 * @return Cartesian X coordinate
+	 */
+	public double getX(int col){
+		return ((_upperX - _lowerX) / _cols) * col + _lowerX;
+	}
+	
+	/**
+	 * Returns the Y coordinate for a given rows
+	 * @param row
+	 * @return Cartesian Y coordinate
+	 */
+	public double getY(int row) {
+		return ((_upperY - _lowerY) / _rows) * row + _lowerY;
+	}
+	
+	/**
+	 * Returns the column for a given Cartesian x coordinate
+	 * @param x coordinate
+	 * @return column if x is contained by the bounds
+	 */
+	public int getCol(double x){
+		return (int)Math.floor(((x - _lowerX)*(_cols-1)) / (_upperX - _lowerX));
+	}
+
+	/**
+	 * Returns the row for a given Cartesian y coordinate
+	 * @param y coordinate
+	 * @return column if y is contained by the bounds (-1 if not)
+	 */
+	public int getRow(double y) {
+		return (int) Math.floor(((y - _lowerY)* (_rows-1)) / (_upperY - _lowerY));
+	}
+
+
 }

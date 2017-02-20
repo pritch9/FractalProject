@@ -41,14 +41,6 @@ public class Mandelbrot {
 		_cols = cols;
 		
 		setBounds(0.6,-2.15,1.3,-1.3);
-		
-		// X bounds: [-2.15, 0.6]
-		_upperX = 0.6;
-		_lowerX = -2.15;
-		
-		// Y bounds: [-1.3, 1.3]
-		_upperY = 1.3;
-		_lowerY = -1.3;
 	}
 	
 	/**
@@ -95,19 +87,19 @@ public class Mandelbrot {
 			for(int cols = 0; cols < _cols; cols++){ // x
 				
 				// convert rows and cols to cartesian plot
-				xCalc = ((_upperX - _lowerX) / _cols) * cols + _lowerX;
-				yCalc = ((_upperY - _lowerY) / _rows) * rows + _lowerY;
+				xCalc = getX(cols);
+				yCalc = getY(rows);
+	
+			
+				tX = xCalc;
+				tY = yCalc;
 				
-				// Mandelbrot starts every test from (0,0) AKA the origin
-				tX = 0;
-				tY = 0;
 				
+				int passes = 0; // Start passes at -1 because it passes once by default
 				
-				int passes = -1; // Start passes at -1 because it passes once by default
+				dist = Math.sqrt(xCalc*xCalc + yCalc*yCalc); // (0,0) has a distance of 0 from (0,0)
 				
-				dist = 0; // (0,0) has a distance of 0 from (0,0)
-				
-				while(dist < 4 && passes < _max){
+				while(dist < 2 && passes < _max){
 					tmp = tX*tX - tY*tY + xCalc; // TEMP X: x' = x^2 - y^2 + (original x value)
 					tY = 2.0 * tX * tY + yCalc; // y' = 2xy + (original y value)
 					tX = tmp; // set X to TEMP X
@@ -127,5 +119,44 @@ public class Mandelbrot {
 	public int getMaxEscapes() {
 		return _max;
 	}
+
+	/**
+	 * Returns the X coordinate for a given column
+	 * @param col
+	 * @return Cartesian X coordinate
+	 */
+	public double getX(int col){
+		return ((_upperX - _lowerX) / _cols) * col + _lowerX;
+	}
+	
+	/**
+	 * Returns the Y coordinate for a given rows
+	 * @param row
+	 * @return Cartesian Y coordinate
+	 */
+	public double getY(int row) {
+		return ((_upperY - _lowerY) / _rows) * row + _lowerY;
+	}
+	
+	/**
+	 * Returns the column for a given Cartesian x coordinate
+	 * @param x coordinate
+	 * @return column if x is contained by the bounds
+	 */
+	public int getCol(double x){
+		if(x < _lowerX || x > _upperX) return -1;
+		return (int)Math.floor(((x - _lowerX)*(_cols-1)) / (_upperX - _lowerX));
+	}
+
+	/**
+	 * Returns the row for a given Cartesian y coordinate
+	 * @param y coordinate
+	 * @return column if y is contained by the bounds (-1 if not)
+	 */
+	public int getRow(double y) {
+		if(y < _lowerY || y > _upperY) return -1;
+		return (int) Math.floor(((y - _lowerY)* (_rows-1)) / (_upperY - _lowerY));
+	}
+
 
 }
