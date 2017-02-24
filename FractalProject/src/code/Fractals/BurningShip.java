@@ -95,8 +95,8 @@ public class BurningShip {
 			for(int cols = 0; cols < _cols; cols++){ // x
 				
 				// convert rows and cols to cartesian plot
-				xCalc = ((_upperX - _lowerX) / _cols) * cols + _lowerX;
-				yCalc = ((_upperY - _lowerY) / _rows) * rows + _lowerY;
+				xCalc = getX(cols);
+				yCalc = getY(rows);
 				
 				// Mandelbrot starts every test from (0,0) AKA the origin
 				tX = 0;
