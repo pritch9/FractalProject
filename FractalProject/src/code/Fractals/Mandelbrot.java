@@ -7,7 +7,7 @@ public class Mandelbrot extends Fractal{
 	}
 	
 	public Mandelbrot(int rows, int cols){
-		super(rows, cols, 0.6, -2.15, 1.3, -1.3);
+		super("Mandelbrot", rows, cols, 0.6, -2.15, 1.3, -1.3);
 	}
 
 	@Override
@@ -22,7 +22,7 @@ public class Mandelbrot extends Fractal{
 		
 		dist = Math.sqrt(xCalc*xCalc + yCalc*yCalc); // (0,0) has a distance of 0 from (0,0)
 		
-		while(dist < this.getEscapeDistance() && passes < this.getMaxEscapes()){
+		while(dist <= this.getEscapeDistance() && passes < this.getMaxEscapes()){
 			tmp = tX*tX - tY*tY + xCalc; // TEMP X: x' = x^2 - y^2 + (original x value)
 			tY = 2.0 * tX * tY + yCalc; // y' = 2xy + (original y value)
 			tX = tmp; // set X to TEMP X

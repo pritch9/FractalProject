@@ -16,7 +16,7 @@ public class MultibrotTest {
 	
 	@Before
 	public void setup(){
-		_multi = new Multibrot();
+		_multi = new Multibrot(512,512);
 		_max = _multi.getMaxEscapes();
 		_points = _multi.getPoints();
 	}
@@ -49,6 +49,12 @@ public class MultibrotTest {
 	@Test
 	public void testSingleEscapes(){
 		assertEquals(1, _points[_multi.getCol(0.9921875)][_multi.getRow(1.05625)]);
+	}
+	
+	@Test
+	public void test10Escapes(){
+		_multi.setEscapeDistance(3.0);
+		assertEquals(10, _points[_multi.getCol(0.7025440313111545)][_multi.getRow(-0.5520547945205528)]);
 	}
 	
 	@Test

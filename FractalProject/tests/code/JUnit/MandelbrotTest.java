@@ -16,7 +16,7 @@ public class MandelbrotTest {
 	
 	@Before
 	public void setup(){
-		_mand = new Mandelbrot();
+		_mand = new Mandelbrot(512, 512);
 		_max = _mand.getMaxEscapes();
 		_points = _mand.getPoints();
 	}
@@ -49,6 +49,12 @@ public class MandelbrotTest {
 	@Test
 	public void testSingleEscapes(){
 		assertEquals(1, _points[_mand.getCol(0.59462890625000013)][_mand.getRow(1.2949218750000122)]);
+	}
+	
+	@Test
+	public void test10Escapes(){
+		_mand.setEscapeDistance(3.0);
+		assertEquals(10, _points[_mand.getCol(0.46007827788650374)][_mand.getRow(-0.3383561643835661)]);
 	}
 	
 	@Test

@@ -11,6 +11,11 @@ public abstract class Fractal {
 	 * Dimensions of points
 	 */
 	private int _rows, _cols;
+	
+	/**
+	 * Name of fractal set
+	 */
+	private String _name;
 
 	/**
 	 * Bounds
@@ -32,8 +37,8 @@ public abstract class Fractal {
 	 * @param upperY
 	 *            upper Y Bound
 	 */
-	public Fractal(double lowerX, double upperX, double lowerY, double upperY) {
-		this(512, 512, upperY, upperY, upperY, upperY);
+	public Fractal(String name, double lowerX, double upperX, double lowerY, double upperY) {
+		this(name, 512, 512, upperY, upperY, upperY, upperY);
 	}
 
 	/**
@@ -52,7 +57,9 @@ public abstract class Fractal {
 	 * @param upperY
 	 *            upper Y Bound
 	 */
-	public Fractal(int rows, int cols, double lowerX, double upperX, double lowerY, double upperY) {
+	public Fractal(String name, int rows, int cols, double lowerX, double upperX, double lowerY, double upperY) {
+		name = _name + " Set";
+		
 		_max = 255; // Default max passes
 
 		_escapeDistance = 2;
@@ -137,7 +144,7 @@ public abstract class Fractal {
 	}
 
 	/**
-	 * Custom calculation or a single ractal point
+	 * Custom calculation or a single fractal point
 	 * 
 	 * @param xCalc
 	 * @param yCalc
@@ -157,7 +164,7 @@ public abstract class Fractal {
 	/**
 	 * Getter or the desired escape distance
 	 * 
-	 * @return escape distance (deault: 2.0)
+	 * @return escape distance (default: 2.0)
 	 */
 	public double getEscapeDistance() {
 		return _escapeDistance;
@@ -201,7 +208,7 @@ public abstract class Fractal {
 	 */
 	public int getCol(double x) {
 		if (x < _lowerX || x > _upperX) {
-			System.out.println("The double is out bounds! perhaps the bounds are incorrect?");
+			System.out.println("The double (" + x + ") is out bounds for X! perhaps the bounds are incorrect?");
 			return -1;
 		}
 		int retVal = (int) Math.ceil(((x - _lowerX) * (_cols - 1)) / (_upperX - _lowerX));
@@ -218,12 +225,28 @@ public abstract class Fractal {
 	 */
 	public int getRow(double y) {
 		if (y < _lowerY || y > _upperY) {
-			System.out.println("The double is out bounds! perhaps the bounds are incorrect?");
+			System.out.println("The double (" + y + ") is out bounds for Y! perhaps the bounds are incorrect?");
 			return -1;
 		}
 		int retVal = (int) Math.ceil(((y - _lowerY) * (_rows - 1)) / (_upperY - _lowerY));
 		if(retVal >= _rows) retVal = _rows-1;
 		return retVal;
+	}
+	
+	/**
+	 * Gets the name of the set
+	 * @return name example: "Mandelbrot"
+	 */
+	public String getName(){
+		return this._name;
+	}
+	
+	public int getNumRows(){
+		return this._rows;
+	}
+	
+	public int getNumCols(){
+		return this._cols;
 	}
 
 }

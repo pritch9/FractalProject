@@ -17,7 +17,7 @@ public class BurningShipTest {
 	
 	@Before
 	public void setup(){
-		_burn = new BurningShip();
+		_burn = new BurningShip(512,512);
 		_max = _burn.getMaxEscapes();
 		_points = _burn.getPoints();
 	}
@@ -45,6 +45,12 @@ public class BurningShipTest {
 	@Test
 	public void testMaxEscapes(){
 		assertEquals(_max, _points[_burn.getCol(-1.7443359374999874)][_burn.getRow(-0.017451171875000338)]);
+	}
+	
+	@Test
+	public void test10Escapes(){
+		_burn.setEscapeDistance(3.0);
+		//assertEquals(10, _points[_burn.getCol(-1.6999999999999802)][_burn.getRow(0.0030136986301371603)]);
 	}
 	
 	@Test

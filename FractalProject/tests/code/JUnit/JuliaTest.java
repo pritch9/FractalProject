@@ -16,7 +16,7 @@ public class JuliaTest {
 	
 	@Before
 	public void setup(){
-		_julia = new Julia();
+		_julia = new Julia(512,512);
 		_max = _julia.getMaxEscapes();
 		_points = _julia.getPoints();
 	}
@@ -49,6 +49,12 @@ public class JuliaTest {
 	@Test
 	public void testSingleEscapes(){
 		assertEquals(1, _points[_julia.getCol(1.6933593749999853)][_julia.getRow(0.9765625)]);
+	}
+	
+	@Test
+	public void test10Escapes(){
+		_julia.setEscapeDistance(3.0);
+		assertEquals(10, _points[_julia.getCol(1.4538160469667272)][_julia.getRow(-0.13502935420743645)]);
 	}
 	
 	@Test

@@ -1,0 +1,7 @@
+RUN:
+
+How we know the program is running correctly.
+
+[run program]
+- JFrame opens
+- There is a menubar at the top with correct options
