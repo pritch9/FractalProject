@@ -26,9 +26,9 @@ public class MandelbrotTest {
 		assertEquals(-2.15, _mand.getX(0), 0.001);
 		assertEquals(-0.7749999999999, _mand.getX(256), 0.001);
 		assertEquals(0.6, _mand.getX(512), 0.001);
-		assertEquals(0, _mand.getCol(-2.15));
-		assertEquals(255, _mand.getCol(-0.7749999999999));
-		assertEquals(511, _mand.getCol(0.6));
+		assertEquals(0, _mand.getCol(-2.15f));
+		assertEquals(256, _mand.getCol(-0.7749999999999f));
+		assertEquals(511, _mand.getCol(0.6f));
 	}
 
 	@Test
@@ -36,19 +36,19 @@ public class MandelbrotTest {
 		assertEquals(-1.3, _mand.getY(0), 0.001);
 		assertEquals(0.0, _mand.getY(256),0.001);
 		assertEquals(1.3, _mand.getY(512), 0.001);
-		assertEquals(0, _mand.getRow(-1.3));
-		assertEquals(255, _mand.getRow(0.0));
-		assertEquals(511, _mand.getRow(1.3000));
+		assertEquals(0, _mand.getRow(-1.3f));
+		assertEquals(256, _mand.getRow(0.0f));
+		assertEquals(511, _mand.getRow(1.3f));
 	}
 	
 	@Test
 	public void testMaxEscapes(){
-		assertEquals(_max, _points[_mand.getCol(0.3207031250000001)][_mand.getRow(-0.07109374999999386)]);
+		assertEquals(_max, _points[_mand.getCol(0.3207031250000001f)][_mand.getRow(-0.07109374999999386f)]);
 	}
 	
 	@Test
 	public void testSingleEscapes(){
-		assertEquals(1, _points[_mand.getCol(0.59462890625000013)][_mand.getRow(1.2949218750000122)]);
+		assertEquals(1, _points[_mand.getCol(0.59462890625000013f)][_mand.getRow(1.2949218750000122f)]);
 	}
 	
 	@Test

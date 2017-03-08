@@ -33,9 +33,9 @@ public class JuliaTest {
 		assertEquals(-1.7, _julia.getX(0), 0.001);
 		assertEquals(0.0, _julia.getX(256), 0.001);
 		assertEquals(1.7, _julia.getX(512), 0.001);
-		assertEquals(0, _julia.getCol(-1.7));
-		assertEquals(255, _julia.getCol(0.0));
-		assertEquals(511, _julia.getCol(1.7));
+		assertEquals(0, _julia.getCol(-1.7f));
+		assertEquals(256, _julia.getCol(0.0f));
+		assertEquals(511, _julia.getCol(1.7f));
 	}
 
 	@Test
@@ -43,19 +43,19 @@ public class JuliaTest {
 		assertEquals(-1.0, _julia.getY(0), 0.001);
 		assertEquals(0.0, _julia.getY(256),0.001);
 		assertEquals(1.0, _julia.getY(512), 0.001);
-		assertEquals(0, _julia.getRow(-1.0));
-		assertEquals(255, _julia.getRow(0.0));
-		assertEquals(511, _julia.getRow(1.0000));
+		assertEquals(0, _julia.getRow(-1.0f));
+		assertEquals(256, _julia.getRow(0.0f));
+		assertEquals(511, _julia.getRow(1.0000f));
 	}
 	
 	@Test
 	public void testMaxEscapes(){
-		assertEquals(_max, _points[_julia.getCol(1.0492187499999897)][_julia.getRow(-0.2250)]);
+		assertEquals(_max, _points[_julia.getCol(1.0492187499999897f)][_julia.getRow(-0.234375f)]);
 	}
 	
 	@Test
 	public void testSingleEscapes(){
-		assertEquals(1, _points[_julia.getCol(1.6933593749999853)][_julia.getRow(0.9765625)]);
+		assertEquals(1, _points[_julia.getCol(1.6933593749999853f)][_julia.getRow(0.9765625f)]);
 	}
 	
 	@Test
