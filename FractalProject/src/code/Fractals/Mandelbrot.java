@@ -7,7 +7,7 @@ public class Mandelbrot extends Fractal{
 	}
 	
 	public Mandelbrot(int rows, int cols){
-		super(rows, cols, 0.6f, -2.15f, 1.3f, -1.3f);
+		super(rows, cols, 0.6, -2.15, 1.3, -1.3);
 	}
 
 	@Override

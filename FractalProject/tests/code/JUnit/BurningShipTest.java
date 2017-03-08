@@ -27,9 +27,9 @@ public class BurningShipTest {
 		assertEquals(-1.8, _burn.getX(0), 0.001);
 		assertEquals(-1.75, _burn.getX(256), 0.001);
 		assertEquals(-1.7, _burn.getX(512), 0.001);
-		assertEquals(0, _burn.getCol(-1.8f));
-		assertEquals(256, _burn.getCol(-1.75f));
-		assertEquals(511, _burn.getCol(-1.7f));
+		assertEquals(0, _burn.getCol(-1.8));
+		assertEquals(256, _burn.getCol(-1.75));
+		assertEquals(511, _burn.getCol(-1.7));
 	}
 
 	@Test
@@ -37,14 +37,14 @@ public class BurningShipTest {
 		assertEquals(-0.08, _burn.getY(0), 0.001);
 		assertEquals(-0.0275, _burn.getY(256),0.001);
 		assertEquals(0.025, _burn.getY(512), 0.001);
-		assertEquals(0, _burn.getRow(-0.08f));
-		assertEquals(256, _burn.getRow(-0.0275f));
-		assertEquals(511, _burn.getRow(0.025f));
+		assertEquals(0, _burn.getRow(-0.08));
+		assertEquals(256, _burn.getRow(-0.0275));
+		assertEquals(511, _burn.getRow(0.025));
 	}
 	
 	@Test
 	public void testMaxEscapes(){
-		assertEquals(_max, _points[_burn.getCol(-1.7443359374999874f)][_burn.getRow(-0.017451171875000338f)]);
+		assertEquals(_max, _points[_burn.getCol(-1.7443359374999874)][_burn.getRow(-0.017451171875000338)]);
 	}
 	
 	@Test

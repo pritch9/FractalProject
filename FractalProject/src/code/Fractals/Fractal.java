@@ -204,7 +204,9 @@ public abstract class Fractal {
 			System.out.println("The double is out bounds! perhaps the bounds are incorrect?");
 			return -1;
 		}
-		return (int) Math.ceil(((x - _lowerX) * (_cols - 1)) / (_upperX - _lowerX));
+		int retVal = (int) Math.ceil(((x - _lowerX) * (_cols - 1)) / (_upperX - _lowerX));
+		if(retVal >= _cols) retVal = _cols-1;
+		return retVal;
 	}
 
 	/**
@@ -219,7 +221,9 @@ public abstract class Fractal {
 			System.out.println("The double is out bounds! perhaps the bounds are incorrect?");
 			return -1;
 		}
-		return (int) Math.ceil(((y - _lowerY) * (_rows - 1)) / (_upperY - _lowerY));
+		int retVal = (int) Math.ceil(((y - _lowerY) * (_rows - 1)) / (_upperY - _lowerY));
+		if(retVal >= _rows) retVal = _rows-1;
+		return retVal;
 	}
 
 }

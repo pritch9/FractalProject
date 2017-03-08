@@ -7,7 +7,7 @@ public class Julia extends Fractal {
 	}
 	
 	public Julia(int rows, int cols){
-		super(rows, cols, 1.7f,-1.7f,1.0f,-1.0f);
+		super(rows, cols, 1.7,-1.7,1.0,-1.0);
 	}
 	
 	public int calculate(double xCalc, double yCalc){
