@@ -10,8 +10,8 @@ public class Julia extends Fractal {
 		super(rows, cols, 1.7f,-1.7f,1.0f,-1.0f);
 	}
 	
-	public int calculate(float xCalc, float yCalc){
-		float tX, tY, tmp;
+	public int calculate(double xCalc, double yCalc){
+		double tX, tY, tmp;
 		double dist;
 		tX = xCalc;
 		tY = yCalc;
@@ -19,8 +19,8 @@ public class Julia extends Fractal {
 		int passes = 0;
 		dist = Math.sqrt(tX*tX + tY*tY);
 		while(dist < this.getEscapeDistance() && passes < this.getMaxEscapes()){
-			tmp = tX*tX - tY*tY + -0.72689f;
-			tY = (float) (2.0 * tX * tY + 0.188887f);
+			tmp = tX*tX - tY*tY + -0.72689;
+			tY = 2.0 * tX * tY + 0.188887;
 			tX = tmp;
 			dist = Math.sqrt(tX*tX + tY*tY);
 			passes++;

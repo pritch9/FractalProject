@@ -11,8 +11,8 @@ public class Mandelbrot extends Fractal{
 	}
 
 	@Override
-	public int calculate(float xCalc, float yCalc) {
-		float tX, tY, tmp;
+	public int calculate(double xCalc, double yCalc) {
+		double tX, tY, tmp;
 		double dist;
 		tX = xCalc;
 		tY = yCalc;
@@ -24,7 +24,7 @@ public class Mandelbrot extends Fractal{
 		
 		while(dist < this.getEscapeDistance() && passes < this.getMaxEscapes()){
 			tmp = tX*tX - tY*tY + xCalc; // TEMP X: x' = x^2 - y^2 + (original x value)
-			tY = (float) (2.0 * tX * tY + yCalc); // y' = 2xy + (original y value)
+			tY = 2.0 * tX * tY + yCalc; // y' = 2xy + (original y value)
 			tX = tmp; // set X to TEMP X
 			dist = Math.sqrt(tX*tX + tY*tY); // recalculate distance
 			passes++; // add a pass

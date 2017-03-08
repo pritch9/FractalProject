@@ -15,47 +15,60 @@ public abstract class Fractal {
 	/**
 	 * Bounds
 	 */
-	private float _upperX, _lowerX, _upperY, _lowerY;
+	private double _upperX, _lowerX, _upperY, _lowerY;
 
 	private double _escapeDistance;
 
 	/**
 	 * Initialize with defaults: Max Passes: 255 Bounds: X: [-1.8,-1.7] Y:
 	 * [-0.08,0.025]
-	 * @param lowerX lower X Bound
-	 * @param upperX upper X Bound
-	 * @param lowerY lower Y Bound
-	 * @param upperY upper Y Bound
+	 * 
+	 * @param lowerX
+	 *            lower X Bound
+	 * @param upperX
+	 *            upper X Bound
+	 * @param lowerY
+	 *            lower Y Bound
+	 * @param upperY
+	 *            upper Y Bound
 	 */
-	public Fractal(float lowerX, float upperX, float lowerY, float upperY) {
+	public Fractal(double lowerX, double upperX, double lowerY, double upperY) {
 		this(512, 512, upperY, upperY, upperY, upperY);
 	}
 
 	/**
 	 * Set rows and columns upon construction
 	 * 
-	 * @param rows amount of rows in points array
-	 * @param cols amount of columns in points array
-	 * @param lowerX lower X Bound
-	 * @param upperX upper X Bound
-	 * @param lowerY lower Y Bound
-	 * @param upperY upper Y Bound
+	 * @param rows
+	 *            amount of rows in points array
+	 * @param cols
+	 *            amount of columns in points array
+	 * @param lowerX
+	 *            lower X Bound
+	 * @param upperX
+	 *            upper X Bound
+	 * @param lowerY
+	 *            lower Y Bound
+	 * @param upperY
+	 *            upper Y Bound
 	 */
-	public Fractal(int rows, int cols, float lowerX, float upperX, float lowerY, float upperY) {
+	public Fractal(int rows, int cols, double lowerX, double upperX, double lowerY, double upperY) {
 		_max = 255; // Default max passes
-		
+
 		_escapeDistance = 2;
 
 		// Defaults points dimensions to 512
 		_rows = rows;
 		_cols = cols;
-		
+
 		setBounds(lowerX, upperX, lowerY, upperY);
 	}
 
 	/**
 	 * Set the max amount of passes
-	 * @param max Maximum amount of passes
+	 * 
+	 * @param max
+	 *            Maximum amount of passes
 	 */
 	public void setMax(int max) {
 		_max = max;
@@ -63,21 +76,26 @@ public abstract class Fractal {
 
 	/**
 	 * Sets the bounds of the set
-	 * @param lowerX lower X Bound
-	 * @param upperX upper X Bound
-	 * @param lowerY lower Y Bound
-	 * @param upperY upper Y Bound
+	 * 
+	 * @param lowerX
+	 *            lower X Bound
+	 * @param upperX
+	 *            upper X Bound
+	 * @param lowerY
+	 *            lower Y Bound
+	 * @param upperY
+	 *            upper Y Bound
 	 */
-	public void setBounds(float upperX, float lowerX, float upperY, float lowerY) {
-		// The next two if statements makes sure the upper bound is > the lower
-		// bound and swaps them if needed
+	public void setBounds(double upperX, double lowerX, double upperY, double lowerY) {
+		// The next two i statements makes sure the upper bound is > the lower
+		// bound and swaps them i needed
 		if (upperX < lowerX) {
-			float t = upperX;
+			double t = upperX;
 			upperX = lowerX;
 			lowerX = t;
 		}
 		if (upperY < lowerY) {
-			float t = upperY;
+			double t = upperY;
 			upperY = lowerY;
 			lowerY = t;
 		}
@@ -95,12 +113,12 @@ public abstract class Fractal {
 	 * @return int[][] points
 	 */
 	public int[][] getPoints() {
-		int[][] points = new int[_cols][_rows]; // define the return array
+		int[][] points = new int[_cols][_rows]; // deine the return array
 												// [X][Y]
 
-		float xCalc, yCalc; // define calculation local variables
+		double xCalc, yCalc; // deine calculation local variables
 
-		// The for loops iterate through the entire 2D array table
+		// The or loops iterate through the entire 2D array table
 		for (int rows = 0; rows < _rows; rows++) { // y
 			for (int cols = 0; cols < _cols; cols++) { // x
 
@@ -115,16 +133,17 @@ public abstract class Fractal {
 												// array
 			}
 		}
-		return points; // returned filled points array
+		return points; // returned illed points array
 	}
 
 	/**
-	 * Custom calculation for a single fractal point
+	 * Custom calculation or a single ractal point
+	 * 
 	 * @param xCalc
 	 * @param yCalc
 	 * @return number of passes
 	 */
-	public abstract int calculate(float xCalc, float yCalc);
+	public abstract int calculate(double xCalc, double yCalc);
 
 	/**
 	 * Returns the max amount of passes
@@ -134,68 +153,70 @@ public abstract class Fractal {
 	public int getMaxEscapes() {
 		return _max;
 	}
-	
+
 	/**
-	 * Getter for the desired escape distance
-	 * @return escape distance (default: 2.0)
+	 * Getter or the desired escape distance
+	 * 
+	 * @return escape distance (deault: 2.0)
 	 */
-	public double getEscapeDistance(){
+	public double getEscapeDistance() {
 		return _escapeDistance;
 	}
-	
+
 	/**
 	 * Sets the escape distance
+	 * 
 	 * @param escapeDistance
 	 */
-	public void setEscapeDistance(float escapeDistance){
+	public void setEscapeDistance(double escapeDistance) {
 		_escapeDistance = escapeDistance;
 	}
 
 	/**
-	 * Returns the X coordinate for a given column
+	 * Returns the X coordinate or a given column
 	 * 
 	 * @param col
 	 * @return Cartesian X coordinate
 	 */
-	public float getX(int col) {
+	public double getX(int col) {
 		return ((_upperX - _lowerX) / _cols) * col + _lowerX;
 	}
 
 	/**
-	 * Returns the Y coordinate for a given rows
+	 * Returns the Y coordinate or a given rows
 	 * 
 	 * @param row
 	 * @return Cartesian Y coordinate
 	 */
-	public float getY(int row) {
+	public double getY(int row) {
 		return ((_upperY - _lowerY) / _rows) * row + _lowerY;
 	}
 
 	/**
-	 * Returns the column for a given Cartesian x coordinate
+	 * Returns the column or a given Cartesian x coordinate
 	 * 
 	 * @param x
 	 *            coordinate
-	 * @return column if x is contained by the bounds
+	 * @return column i x is contained by the bounds
 	 */
-	public int getCol(float x) {
-		if(x < _lowerX || x > _upperX) {
-			System.out.println("The float is out bounds! perhaps the bounds are incorrect?");
+	public int getCol(double x) {
+		if (x < _lowerX || x > _upperX) {
+			System.out.println("The double is out bounds! perhaps the bounds are incorrect?");
 			return -1;
 		}
-		return  (int) Math.ceil(((x - _lowerX) * (_cols - 1)) / (_upperX - _lowerX));
+		return (int) Math.ceil(((x - _lowerX) * (_cols - 1)) / (_upperX - _lowerX));
 	}
 
 	/**
-	 * Returns the row for a given Cartesian y coordinate
+	 * Returns the row or a given Cartesian y coordinate
 	 * 
 	 * @param y
 	 *            coordinate
-	 * @return column if y is contained by the bounds (-1 if not)
+	 * @return column i y is contained by the bounds (-1 i not)
 	 */
-	public int getRow(float y) {
-		if(y < _lowerY || y > _upperY) {
-			System.out.println("The float is out bounds! perhaps the bounds are incorrect?");
+	public int getRow(double y) {
+		if (y < _lowerY || y > _upperY) {
+			System.out.println("The double is out bounds! perhaps the bounds are incorrect?");
 			return -1;
 		}
 		return (int) Math.ceil(((y - _lowerY) * (_rows - 1)) / (_upperY - _lowerY));
