@@ -119,7 +119,7 @@ public class FractalViewer extends JFrame{
 	
 	private void changeFractal(Fractal f) {
 		_current = f;
-		
+		_fractalPanel.updateImage(_current.getPoints());
 	}
 
 	private void setupFractals(){
@@ -129,5 +129,26 @@ public class FractalViewer extends JFrame{
 		_fractals[2] = new BurningShip();
 		_fractals[3] = new Multibrot();
 		_current = _fractals[0];
+	}
+	
+	private void changeColor(int num){
+		switch(num){
+		case 1:
+			_fractalPanel.setIndexColorModel(ColorModelFactory.createBluesColorModel(50));
+			break;
+		case 2:
+			_fractalPanel.setIndexColorModel(ColorModelFactory.createGrayColorModel(50));
+			break;
+		case 3:
+			_fractalPanel.setIndexColorModel(ColorModelFactory.createRainbowColorModel(50));
+			break;
+		case 4:
+			
+			break;
+		}
+	}
+	
+	private void changeEscapeDistance(double dist){
+		_current.setEscapeDistance(dist);
 	}
 }
