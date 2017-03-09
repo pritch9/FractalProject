@@ -7,6 +7,7 @@ import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -93,30 +94,59 @@ public class FractalViewer extends JFrame{
 		
 		JMenuItem colorA = new JMenuItem("Color A");
 		colorA.getAccessibleContext().setAccessibleDescription("Changes Fractals to color A");
-		colorA.addActionListener(null); //null for now
+		colorA.addActionListener((e) -> changeColor(1)); //null for now
 		colorBar.add(colorA);
 		
 		JMenuItem colorB = new JMenuItem("Color B");
 		colorB.getAccessibleContext().setAccessibleDescription("Changes Fractals to color B");
-		colorB.addActionListener(null); //null for now
+		colorB.addActionListener((e) -> changeColor(2)); //null for now
 		colorBar.add(colorB);
 		
 		JMenuItem colorC = new JMenuItem("Color C");
 		colorC.getAccessibleContext().setAccessibleDescription("Changes Fractals to color C");
-		colorC.addActionListener(null); //null for now
+		colorC.addActionListener((e) -> changeColor(3)); //null for now
 		colorBar.add(colorC);
 		
 		JMenuItem colorD = new JMenuItem("Color D");
 		colorD.getAccessibleContext().setAccessibleDescription("Changes Fractals to color D");
-		colorD.addActionListener(null); //null for now
+		colorD.addActionListener((e) -> changeColor(4)); //null for now
 		colorBar.add(colorD);
 		
 		_menuBar.add(colorBar);
 		
+		menu = new JMenu("Options");
+		menu.setMnemonic(KeyEvent.VK_F);
+		menu.getAccessibleContext().setAccessibleDescription("Change escape");
+		JMenuItem escapeTime = new JMenuItem("Change Escape Time");
+		escapeTime.getAccessibleContext().setAccessibleDescription("Change the escape time for the fractal");
+		escapeTime.addActionListener((e)->{ 
+			boolean wrong = true;
+			while(wrong) {
+				wrong = false;
+				String s = JOptionPane.showInputDialog("Enter a new escape distance ( > 0 )");
+				try {
+					double d = Double.parseDouble(s);
+					if(d > 0){
+						changeED(d);
+					} else {
+						wrong = true;
+					}
+				} catch (NumberFormatException e1){
+					wrong = true;
+				} catch (NullPointerException e2){}
+			}
+		});
+		menu.add(escapeTime);
+		_menuBar.add(menu);
 		
 		this.setJMenuBar(_menuBar);
 	}
 	
+	private void changeED(double d) {
+		_current.setEscapeDistance(d);
+		_fractalPanel.updateImage(_current.getPoints());
+	}
+
 	private void changeFractal(Fractal f) {
 		_current = f;
 		_fractalPanel.updateImage(_current.getPoints());
@@ -146,6 +176,7 @@ public class FractalViewer extends JFrame{
 			
 			break;
 		}
+		_fractalPanel.updateImage(_current.getPoints());
 	}
 	
 	private void changeEscapeDistance(double dist){

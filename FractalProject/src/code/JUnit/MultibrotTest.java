@@ -5,7 +5,7 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
 
-import src.code.Fractals.Multibrot;
+import code.Fractals.Multibrot;
 
 public class MultibrotTest {
 	
@@ -38,7 +38,7 @@ public class MultibrotTest {
 		assertEquals(1.3, _multi.getY(512), 0.001);
 		assertEquals(0, _multi.getRow(-1.3));
 		assertEquals(256, _multi.getRow(0.0));
-		assertEquals(511, _multi.getRow(1.3));
+		assertEquals(512, _multi.getRow(1.3));
 	}
 	
 	@Test

@@ -212,7 +212,6 @@ public abstract class Fractal {
 			return -1;
 		}
 		int retVal = (int) Math.ceil(((x - _lowerX) * (_cols - 1)) / (_upperX - _lowerX));
-		if(retVal >= _cols) retVal = _cols-1;
 		return retVal;
 	}
 
@@ -229,7 +228,6 @@ public abstract class Fractal {
 			return -1;
 		}
 		int retVal = (int) Math.ceil(((y - _lowerY) * (_rows - 1)) / (_upperY - _lowerY));
-		if(retVal >= _rows) retVal = _rows-1;
 		return retVal;
 	}
 	

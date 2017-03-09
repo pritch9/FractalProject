@@ -6,7 +6,7 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
-import src.code.Fractals.BurningShip;
+import code.Fractals.BurningShip;
 
 public class BurningShipTest {
 	
@@ -29,7 +29,7 @@ public class BurningShipTest {
 		assertEquals(-1.7, _burn.getX(512), 0.001);
 		assertEquals(0, _burn.getCol(-1.8));
 		assertEquals(256, _burn.getCol(-1.75));
-		assertEquals(511, _burn.getCol(-1.7));
+		assertEquals(512, _burn.getCol(-1.7));
 	}
 
 	@Test
@@ -39,7 +39,7 @@ public class BurningShipTest {
 		assertEquals(0.025, _burn.getY(512), 0.001);
 		assertEquals(0, _burn.getRow(-0.08));
 		assertEquals(256, _burn.getRow(-0.0275));
-		assertEquals(511, _burn.getRow(0.025));
+		assertEquals(512, _burn.getRow(0.025));
 	}
 	
 	@Test

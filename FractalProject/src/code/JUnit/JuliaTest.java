@@ -5,7 +5,7 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
 
-import src.code.Fractals.Julia;
+import code.Fractals.Julia;
 
 public class JuliaTest {
 	

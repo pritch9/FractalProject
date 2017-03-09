@@ -5,7 +5,7 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
 
-import src.code.Fractals.Mandelbrot;
+import code.Fractals.Mandelbrot;
 
 public class MandelbrotTest {
 	
@@ -38,7 +38,7 @@ public class MandelbrotTest {
 		assertEquals(1.3, _mand.getY(512), 0.001);
 		assertEquals(0, _mand.getRow(-1.3));
 		assertEquals(256, _mand.getRow(0.0));
-		assertEquals(511, _mand.getRow(1.3));
+		assertEquals(512, _mand.getRow(1.3));
 	}
 	
 	@Test
