@@ -58,7 +58,7 @@ public abstract class Fractal {
 	 *            upper Y Bound
 	 */
 	public Fractal(String name, int rows, int cols, double lowerX, double upperX, double lowerY, double upperY) {
-		name = _name + " Set";
+		_name = name + " Set";
 		
 		_max = 255; // Default max passes
 
