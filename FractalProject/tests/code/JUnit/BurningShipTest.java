@@ -6,7 +6,7 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
-import code.Fractals.BurningShip;
+import src.code.Fractals.BurningShip;
 
 public class BurningShipTest {
 	
