@@ -5,3 +5,90 @@ How we know the program is running correctly.
 [run program]
 - JFrame opens
 - There is a menubar at the top with correct options
+
+
+	
+	private JMenuBar _menuBar;
+	private Fractal[] _fractals;
+	private Fractal _current;
+	private FractalPanel _fractalPanel;
+	
+	public FractalViewer(){
+		setupFractals();
+		setupJMenuBar();
+		setupFractalPanel();
+		setupJFrame();
+	}
+
+	private void setupFractalPanel() {
+		_fractalPanel = new FractalPanel();
+		_fractalPanel.setIndexColorModel(ColorModelFactory.createGrayColorModel(50));
+		_fractalPanel.updateImage(_current.getPoints());
+		this.add(_fractalPanel);
+	}
+
+	private void setupJFrame() {
+		try {
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+			SwingUtilities.updateComponentTreeUI(this);
+		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
+				| UnsupportedLookAndFeelException e) {
+			e.printStackTrace();
+		}
+		this.pack();
+		this.setLocation((Toolkit.getDefaultToolkit().getScreenSize().width - this.getWidth()) / 2, (Toolkit.getDefaultToolkit().getScreenSize().height - this.getHeight()) / 2);
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.setResizable(false);
+		this.setVisible(true);
+	}
+
+	private void setupJMenuBar() {
+		
+		_menuBar = new JMenuBar();
+		
+		/*
+		
+		// Fractal menu
+		menu = new JMenu("Fractals"); // new JMenu
+		menu.setMnemonic(KeyEvent.VK_F); // not sure if this does anything
+		menu.getAccessibleContext().setAccessibleDescription("I scream for Ice Cream!"); // description for menu
+		
+		// fractal menu items
+		menuItem = new JMenuItem("Mandelbrot Set"); // Menu option text
+		menuItem.getAccessibleContext().setAccessibleDescription("Show the Mandelbrot Set in the viewer"); // menu option description
+		menuItem.addActionListener((e)->{ changeFractal(MANDELBROT); }); // action listener
+		menu.add(menuItem); // add the item to the menu
+
+		
+		*/
+		
+		
+		JMenu menu = new JMenu("Fractals");
+		menu.setMnemonic(KeyEvent.VK_F);
+		menu.getAccessibleContext().setAccessibleDescription("Change the fractal being viewed");
+		
+		for(Fractal f : _fractals){
+			JMenuItem i = new JMenuItem(f.getName());
+			i.getAccessibleContext().setAccessibleDescription("Show the " + f.getName() + " in the viewer");
+			i.addActionListener((e) -> { changeFractal(f); });
+			menu.add(i);
+		}
+		_menuBar.add(menu);
+		
+		this.setJMenuBar(_menuBar);
+	}
+	
+	private void changeFractal(Fractal f) {
+		_current = f;
+		
+	}
+
+	private void setupFractals(){
+		_fractals = new Fractal[4];
+		_fractals[0] = new Mandelbrot();
+		_fractals[1] = new Julia();
+		_fractals[2] = new BurningShip();
+		_fractals[3] = new Multibrot();
+		_current = _fractals[0];
+	}
+
