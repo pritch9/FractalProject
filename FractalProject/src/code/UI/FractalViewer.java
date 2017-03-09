@@ -35,6 +35,30 @@ public class FractalViewer extends JFrame{
 		
 		*/
 		
+		// Creates new menu item with description
+		JMenu colorBar = new JMenu("Colors");
+		colorBar.setMnemonic(KeyEvent.VK_F);
+		colorBar.getAccessibleContext().setAccessibleDescription("Changes Fractal Colors");
+		
+		JMenuItem colorA = new JMenuItem("Color A");
+		colorA.getAccessibleContext().setAccessibleDescription("Changes Fractals to color A");
+		colorA.addActionListener(null); //null for now
+		colorBar.add(colorA);
+		
+		JMenuItem colorB = new JMenuItem("Color B");
+		colorB.getAccessibleContext().setAccessibleDescription("Changes Fractals to color B");
+		colorB.addActionListener(null); //null for now
+		colorBar.add(colorB);
+		
+		JMenuItem colorC = new JMenuItem("Color C");
+		colorC.getAccessibleContext().setAccessibleDescription("Changes Fractals to color C");
+		colorC.addActionListener(null); //null for now
+		colorBar.add(colorC);
+		
+		JMenuItem colorD = new JMenuItem("Color D");
+		colorD.getAccessibleContext().setAccessibleDescription("Changes Fractals to color D");
+		colorD.addActionListener(null); //null for now
+		colorBar.add(colorD);
 	}
 
 }
