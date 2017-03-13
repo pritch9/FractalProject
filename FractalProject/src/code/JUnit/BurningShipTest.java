@@ -50,7 +50,11 @@ public class BurningShipTest {
 	@Test
 	public void test10Escapes(){
 		_burn.setEscapeDistance(3.0);
-		//assertEquals(10, _points[_burn.getCol(-1.6999999999999802)][_burn.getRow(0.0030136986301371603)]);
+		_points = _burn.getPoints();
+		int passes = _points[_burn.getCol(-1.701)][_burn.getRow(0.0030136986301371603)];
+		assertTrue("Expected passes to be >= 10, but was " + passes, passes >= 10);
+		_burn.setEscapeDistance(2.0);
+		_points = _burn.getPoints();
 	}
 	
 	@Test

@@ -1,6 +1,7 @@
 package code.JUnit;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -28,7 +29,7 @@ public class JuliaTest {
 		assertEquals(1.7, _julia.getX(512), 0.001);
 		assertEquals(0, _julia.getCol(-1.7));
 		assertEquals(256, _julia.getCol(0.0));
-		assertEquals(511, _julia.getCol(1.7));
+		assertEquals(512, _julia.getCol(1.7));
 	}
 
 	@Test
@@ -38,7 +39,7 @@ public class JuliaTest {
 		assertEquals(1.0, _julia.getY(512), 0.001);
 		assertEquals(0, _julia.getRow(-1.0));
 		assertEquals(256, _julia.getRow(0.0));
-		assertEquals(511, _julia.getRow(1.0000));
+		assertEquals(512, _julia.getRow(1.0000));
 	}
 	
 	@Test
@@ -54,7 +55,11 @@ public class JuliaTest {
 	@Test
 	public void test10Escapes(){
 		_julia.setEscapeDistance(3.0);
-		assertEquals(10, _points[_julia.getCol(1.4538160469667272)][_julia.getRow(-0.13502935420743645)]);
+		_points = _julia.getPoints();
+		int passes = _points[_julia.getCol(1.45)][_julia.getRow(-0.135)];
+		assertTrue("Expected passes to be >= 10, but was " + passes, passes >= 10);
+		_julia.setEscapeDistance(2.0);
+		_points = _julia.getPoints();
 	}
 	
 	@Test

@@ -1,6 +1,7 @@
 package code.JUnit;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -28,7 +29,7 @@ public class MandelbrotTest {
 		assertEquals(0.6, _mand.getX(512), 0.001);
 		assertEquals(0, _mand.getCol(-2.15));
 		assertEquals(256, _mand.getCol(-0.7749999999999));
-		assertEquals(511, _mand.getCol(0.6));
+		assertEquals(512, _mand.getCol(0.6));
 	}
 
 	@Test
@@ -54,7 +55,11 @@ public class MandelbrotTest {
 	@Test
 	public void test10Escapes(){
 		_mand.setEscapeDistance(3.0);
-		assertEquals(10, _points[_mand.getCol(0.46007827788650374)][_mand.getRow(-0.3383561643835661)]);
+		_points = _mand.getPoints();
+		int passes = _points[_mand.getCol(0.46007827788650374)][_mand.getRow(-0.3383561643835661)];
+		assertTrue("Expected passes to be >= 10, but was " + passes, passes >= 10);
+		_mand.setEscapeDistance(2.0);
+		_points = _mand.getPoints();
 	}
 	
 	@Test

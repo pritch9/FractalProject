@@ -38,7 +38,7 @@ public abstract class Fractal {
 	 *            upper Y Bound
 	 */
 	public Fractal(String name, double lowerX, double upperX, double lowerY, double upperY) {
-		this(name, 512, 512, upperY, upperY, upperY, upperY);
+		this(name, 512, 512, upperX, lowerX, upperY, lowerY);
 	}
 
 	/**
@@ -211,8 +211,7 @@ public abstract class Fractal {
 			System.out.println("The double (" + x + ") is out bounds for X! perhaps the bounds are incorrect?");
 			return -1;
 		}
-		int retVal = (int) Math.ceil(((x - _lowerX) * (_cols - 1)) / (_upperX - _lowerX));
-		return retVal;
+		return (int) Math.rint((x - _lowerX) / ((_upperX - _lowerX) / this._cols));
 	}
 
 	/**
@@ -227,8 +226,7 @@ public abstract class Fractal {
 			System.out.println("The double (" + y + ") is out bounds for Y! perhaps the bounds are incorrect?");
 			return -1;
 		}
-		int retVal = (int) Math.ceil(((y - _lowerY) * (_rows - 1)) / (_upperY - _lowerY));
-		return retVal;
+		return (int) Math.rint((y - _lowerY) / ((_upperY - _lowerY) / this._rows));
 	}
 	
 	/**
@@ -246,5 +244,4 @@ public abstract class Fractal {
 	public int getNumCols(){
 		return this._cols;
 	}
-
 }

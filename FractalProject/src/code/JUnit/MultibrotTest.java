@@ -1,6 +1,7 @@
 package code.JUnit;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -28,7 +29,7 @@ public class MultibrotTest {
 		assertEquals(1.0, _multi.getX(512), 0.001);
 		assertEquals(0, _multi.getCol(-1.0));
 		assertEquals(256, _multi.getCol(0.0));
-		assertEquals(511, _multi.getCol(1.0));
+		assertEquals(512, _multi.getCol(1.0));
 	}
 
 	@Test
@@ -54,7 +55,11 @@ public class MultibrotTest {
 	@Test
 	public void test10Escapes(){
 		_multi.setEscapeDistance(3.0);
-		assertEquals(10, _points[_multi.getCol(0.7025440313111545)][_multi.getRow(-0.5520547945205528)]);
+		_points = _multi.getPoints();
+		int passes = _points[_multi.getCol(0.696969696969)][_multi.getRow(-0.533)];
+		assertTrue("Expected passes to be >= 10, but was " + passes, passes >= 10);
+		_multi.setEscapeDistance(2.0);
+		_points = _multi.getPoints();
 	}
 	
 	@Test
