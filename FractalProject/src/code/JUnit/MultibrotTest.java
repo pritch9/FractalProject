@@ -56,8 +56,10 @@ public class MultibrotTest {
 	public void test10Escapes(){
 		_multi.setEscapeDistance(3.0);
 		_points = _multi.getPoints();
-		int passes = _points[_multi.getCol(0.696969696969)][_multi.getRow(-0.533)];
-		assertTrue("Expected passes to be >= 10, but was " + passes, passes >= 10);
+		System.out.println(_multi.getCol(0.7025440313111545));
+		System.out.println(_multi.getRow(-0.5520547945205528));
+		int passes = _points[_multi.getCol(0.7025440313111545)][_multi.getRow(-0.5520547945205528)];
+		assertEquals(10, passes);
 		_multi.setEscapeDistance(2.0);
 		_points = _multi.getPoints();
 	}

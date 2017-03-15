@@ -211,7 +211,7 @@ public abstract class Fractal {
 			System.out.println("The double (" + x + ") is out bounds for X! perhaps the bounds are incorrect?");
 			return -1;
 		}
-		return (int) Math.rint((x - _lowerX) / ((_upperX - _lowerX) / this._cols));
+		return (int) Math.ceil((x - _lowerX) / ((_upperX - _lowerX) / this._cols));
 	}
 
 	/**
@@ -226,7 +226,7 @@ public abstract class Fractal {
 			System.out.println("The double (" + y + ") is out bounds for Y! perhaps the bounds are incorrect?");
 			return -1;
 		}
-		return (int) Math.rint((y - _lowerY) / ((_upperY - _lowerY) / this._rows));
+		return (int) Math.floor((y - _lowerY) / ((_upperY - _lowerY) / this._rows));
 	}
 	
 	/**

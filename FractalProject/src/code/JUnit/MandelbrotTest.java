@@ -28,7 +28,7 @@ public class MandelbrotTest {
 		assertEquals(-0.7749999999999, _mand.getX(256), 0.001);
 		assertEquals(0.6, _mand.getX(512), 0.001);
 		assertEquals(0, _mand.getCol(-2.15));
-		assertEquals(256, _mand.getCol(-0.7749999999999));
+		assertEquals(256, _mand.getCol(-0.775));
 		assertEquals(512, _mand.getCol(0.6));
 	}
 
@@ -49,7 +49,7 @@ public class MandelbrotTest {
 	
 	@Test
 	public void testSingleEscapes(){
-		assertEquals(1, _points[_mand.getCol(0.59462890625000013)][_mand.getRow(1.2949218750000122)]);
+		assertEquals(1, _points[_mand.getCol(0.5946289062500001)][_mand.getRow(1.2949218750000122)]);
 	}
 	
 	@Test
@@ -57,7 +57,7 @@ public class MandelbrotTest {
 		_mand.setEscapeDistance(3.0);
 		_points = _mand.getPoints();
 		int passes = _points[_mand.getCol(0.46007827788650374)][_mand.getRow(-0.3383561643835661)];
-		assertTrue("Expected passes to be >= 10, but was " + passes, passes >= 10);
+		assertEquals(10, passes);
 		_mand.setEscapeDistance(2.0);
 		_points = _mand.getPoints();
 	}

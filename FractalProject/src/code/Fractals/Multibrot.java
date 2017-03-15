@@ -19,16 +19,15 @@ public class Multibrot extends Fractal{
 		tX = xCalc;
 		tY = yCalc;
 		
-		
 		int passes = 0; // Start passes at 0
 		
 		dist = Math.sqrt(tX*tX + tY*tY); // Use math to find distance from 0
 		
 		while(dist <= this.getEscapeDistance() && passes < this.getMaxEscapes()){
 			tmp = tX*tX*tX - (3.0*tX*tY*tY) + xCalc; // TEMP X: x' = x^2 - y^2 + (original x value)
-			tY = 3.0 * tX*tX * tY - tY*tY*tY + yCalc; // y' = 2xy + (original y value)
+			tY = (3.0 * tX*tX * tY) - (tY*tY*tY) + yCalc; // y' = 2xy + (original y value)
 			tX = tmp; // set X to TEMP X
-			dist = Math.sqrt(tX*tX + tY*tY); // recalculate distance
+			dist = Math.sqrt(tX*tX + tY*tY);// recalculate distance
 			passes++; // add a pass
 		}
 		return passes;
