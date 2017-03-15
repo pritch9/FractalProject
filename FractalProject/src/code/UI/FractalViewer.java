@@ -173,7 +173,7 @@ public class FractalViewer extends JFrame{
 			_fractalPanel.setIndexColorModel(ColorModelFactory.createRainbowColorModel(50));
 			break;
 		case 4:
-			
+			_fractalPanel.setIndexColorModel(ColorModelFactory.createGreenColorModel(50));
 			break;
 		}
 		_fractalPanel.updateImage(_current.getPoints());
