@@ -19,7 +19,6 @@ import code.Fractals.Fractal;
 import code.Fractals.Julia;
 import code.Fractals.Mandelbrot;
 import code.Fractals.Multibrot;
-import code.UI.File.exitApp;
 import edu.buffalo.fractal.FractalPanel;
 
 public class FractalViewer extends JFrame{
@@ -78,14 +77,14 @@ public class FractalViewer extends JFrame{
 		*/
 		
         JMenu file = new JMenu("File");
-        menubar.add(file);
+        _menuBar.add(file);
         JMenuItem exit = new JMenuItem("Exit");
         file.add(exit);
         exit.addActionListener(new ActionListener(){
         	public void actionPerformed(ActionEvent e){
 	            System.exit(0);}
         }); 
-        frame.setVisible(true);
+        
 		
 		JMenu menu = new JMenu("Fractals");
 		menu.setMnemonic(KeyEvent.VK_F);
