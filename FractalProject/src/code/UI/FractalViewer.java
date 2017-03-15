@@ -36,7 +36,7 @@ public class FractalViewer extends JFrame{
 
 	private void setupFractalPanel() {
 		_fractalPanel = new FractalPanel();
-		changeColor(1);
+		_fractalPanel.setIndexColorModel(ColorModelFactory.createGrayColorModel(50));
 		_fractalPanel.updateImage(_current.getPoints());
 		this.add(_fractalPanel);
 	}
@@ -173,19 +173,18 @@ public class FractalViewer extends JFrame{
 	}
 	
 	private void changeColor(int num){
-		int colors = 50;
 		switch(num){
 		case 1:
-			_fractalPanel.setIndexColorModel(ColorModelFactory.createBluesColorModel(colors));
+			_fractalPanel.setIndexColorModel(ColorModelFactory.createBluesColorModel(50));
 			break;
 		case 2:
-			_fractalPanel.setIndexColorModel(ColorModelFactory.createGrayColorModel(colors));
+			_fractalPanel.setIndexColorModel(ColorModelFactory.createGrayColorModel(50));
 			break;
 		case 3:
-			_fractalPanel.setIndexColorModel(ColorModelFactory.createRainbowColorModel(colors));
+			_fractalPanel.setIndexColorModel(ColorModelFactory.createRainbowColorModel(50));
 			break;
 		case 4:
-			_fractalPanel.setIndexColorModel(ColorModelFactory.createGreenColorModel(colors));
+			_fractalPanel.setIndexColorModel(ColorModelFactory.createGreenColorModel(50));
 			break;
 		}
 		_fractalPanel.updateImage(_current.getPoints());
