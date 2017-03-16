@@ -1,16 +1,24 @@
 package code.UI;
 
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.GridLayout;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 
+import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
+import javax.swing.Timer;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
@@ -31,6 +39,12 @@ public class FractalViewer extends JFrame{
 	private Fractal[] _fractals;
 	private Fractal _current;
 	private FractalPanel _fractalPanel;
+	private JPanel _animationPanel;
+	private Timer _t;
+	private int _colors = 255;
+	private int _colorNumber;
+
+	private int _tInc = 1;
 	
 	public FractalViewer(){
 		setupFractals();
@@ -41,9 +55,8 @@ public class FractalViewer extends JFrame{
 
 	private void setupFractalPanel() {
 		_fractalPanel = new FractalPanel();
-		_fractalPanel.setIndexColorModel(ColorModelFactory.createGrayColorModel(50));
-		_fractalPanel.updateImage(_current.getPoints());
-		this.add(_fractalPanel);
+		this.changeColor(3);
+		this.add(_fractalPanel, BorderLayout.CENTER);
 	}
 
 	private void setupJFrame() {
@@ -59,6 +72,9 @@ public class FractalViewer extends JFrame{
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setResizable(false);
 		this.setVisible(true);
+		_fractalPanel.setMinimumSize(_fractalPanel.getSize());
+		_fractalPanel.setMaximumSize(_fractalPanel.getSize());
+		_fractalPanel.setPreferredSize(_fractalPanel.getSize());
 	}
 
 	private void setupJMenuBar() {
@@ -116,14 +132,14 @@ public class FractalViewer extends JFrame{
 		
 		menu = new JMenu("Options");
 		menu.setMnemonic(KeyEvent.VK_F);
-		menu.getAccessibleContext().setAccessibleDescription("Change escape");
+		menu.getAccessibleContext().setAccessibleDescription("Optional Edits");
 		JMenuItem escapeTime = new JMenuItem("Change Escape Time");
 		escapeTime.getAccessibleContext().setAccessibleDescription("Change the escape time for the fractal");
 		escapeTime.addActionListener((e)->{ 
 			boolean wrong = true;
 			while(wrong) {
 				wrong = false;
-				String s = JOptionPane.showInputDialog("Enter a new escape distance ( > 0 )");
+				String s = JOptionPane.showInputDialog("Enter a new escape distance ( > 0 )\n(default: 255)");
 				try {
 					double d = Double.parseDouble(s);
 					if(d > 0){
@@ -137,13 +153,121 @@ public class FractalViewer extends JFrame{
 			}
 		});
 		menu.add(escapeTime);
+		JMenuItem item = new JMenuItem("Change Color Density");
+		item.getAccessibleContext().setAccessibleDescription("Change the amount of colors in the fractal");
+		item.addActionListener((e) -> {
+			boolean wrong = true;
+			while(wrong) {
+				wrong = false;
+				String s = JOptionPane.showInputDialog("Enter a new color density ( > 0 )\n(current: " + _colors + ")");
+				try {
+					int d = Integer.parseInt(s);
+					if(d > 0){
+						changeColorDensity(d);
+					} else {
+						wrong = true;
+					}
+				} catch (NumberFormatException e1){
+					if(e1.getMessage().trim().isEmpty() || e1.getMessage() != "null") wrong = true;
+				} catch (NullPointerException e2){}
+			}
+		});
+		menu.add(item);
 		_menuBar.add(menu);
-		
+		/*
+		menu = new JMenu("Animations");
+		menu.setMnemonic(KeyEvent.VK_F);
+		menu.getAccessibleContext().setAccessibleDescription("Optional Edits");
+		item = new JMenuItem("Colors");
+		item.getAccessibleContext().setAccessibleDescription("Change the amount of colors in the fractal");
+		item.addActionListener((e) -> {
+			_animationPanel = new JPanel();
+			BorderLayout b = new BorderLayout();
+			b.setHgap(0);
+			b.setVgap(0);
+			_animationPanel.setLayout(b);
+			JPanel bottom = new JPanel();
+			JPanel top = new JPanel();
+			JPanel padding = new JPanel();
+			padding.setPreferredSize(new Dimension(10, 15));
+
+			BorderLayout g = new BorderLayout();
+			g.setHgap(0);
+			top.setLayout(g);
+			JLabel label = new JLabel(" " + " Color Density Animation");
+			label.setFont(new Font("sans-serif", Font.BOLD, 24));
+			JButton ex = new JButton("X");
+			ex.setPreferredSize(new Dimension(40,40));
+			ex.setOpaque(false);
+			ex.setBorderPainted(false);
+			ex.setFocusable(false);
+			ex.setContentAreaFilled(false);
+			ex.setFont(new Font("sans-serif", Font.PLAIN, 10));
+			ex.addActionListener((e3)->{
+				this.getContentPane().remove(_animationPanel);
+				_animationPanel = null;
+				this.revalidate();
+				this.pack();
+				this.repaint();
+			});
+			
+			top.add(label, BorderLayout.WEST);
+			top.add(ex, BorderLayout.EAST);
+			
+			JButton start = new JButton("Start");
+			JButton stop = new JButton("Stop");
+			BorderLayout layout = new BorderLayout();
+			layout.setHgap(0);
+			layout.setVgap(0);
+			bottom.setLayout(layout);
+			bottom.add(start, BorderLayout.WEST);
+			bottom.add(stop, BorderLayout.EAST);
+			start.setPreferredSize(new Dimension(getWidth()/2-3, 50));
+			stop.setPreferredSize(new Dimension(getWidth()/2-3, 50));
+			
+			start.addActionListener((g1)->{
+				_t = new Timer(0, (h) -> {
+					if(this._colors >= this._current.getMaxEscapes() || this._colors <= Math.abs(_tInc)*8) _tInc = -_tInc;
+					this._colors += _tInc;
+					this.changeColor(_colorNumber);
+					_t.setDelay(this._current.getMaxEscapes()*3 / _colors - 3);
+					System.out.println(_t.getDelay());
+				});
+				_t.setDelay(this._current.getMaxEscapes()*3 / _colors);
+				_t.start();
+			});
+			
+			stop.addActionListener((e1)->{
+				if(_t.isRunning()){
+					_t.stop();
+					_colors = 255;
+					this.changeColor(_colorNumber);
+				}
+			});
+			
+			_animationPanel.add(top, BorderLayout.NORTH);
+			_animationPanel.add(padding, BorderLayout.CENTER);
+			_animationPanel.add(bottom, BorderLayout.SOUTH);
+			
+			this.add(_animationPanel, BorderLayout.SOUTH);
+			this.pack();
+			this.revalidate();
+			this.repaint();
+		});
+		menu.add(item);
+		_menuBar.add(menu);
+		*/
 		this.setJMenuBar(_menuBar);
 	}
 	
 	private void changeED(double d) {
 		_current.setEscapeDistance(d);
+		_fractalPanel.updateImage(_current.getPoints());
+	}
+	
+	private void changeColorDensity(int d){
+		_colors = d;
+		changeColor(_colorNumber);
 		_fractalPanel.updateImage(_current.getPoints());
 	}
 
@@ -162,21 +286,21 @@ public class FractalViewer extends JFrame{
 	}
 	
 	private void changeColor(int num){
-		int colors = 255;
 		switch(num){
 		case 1:
-			_fractalPanel.setIndexColorModel(ColorModelFactory.createBluesColorModel(colors));
+			_fractalPanel.setIndexColorModel(ColorModelFactory.createBluesColorModel(_colors));
 			break;
 		case 2:
-			_fractalPanel.setIndexColorModel(ColorModelFactory.createGrayColorModel(colors));
+			_fractalPanel.setIndexColorModel(ColorModelFactory.createGrayColorModel(_colors));
 			break;
 		case 3:
-			_fractalPanel.setIndexColorModel(ColorModelFactory.createRainbowColorModel(colors));
+			_fractalPanel.setIndexColorModel(ColorModelFactory.createRainbowColorModel(_colors));
 			break;
 		case 4:
-			_fractalPanel.setIndexColorModel(ColorModelFactory.createGreenColorModel(colors));
+			_fractalPanel.setIndexColorModel(ColorModelFactory.createGreenColorModel(_colors));
 			break;
 		}
 		_fractalPanel.updateImage(_current.getPoints());
+		_colorNumber = num;
 	}
 }
