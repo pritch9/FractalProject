@@ -108,24 +108,24 @@ public class FractalViewer extends JFrame{
 		colorBar.setMnemonic(KeyEvent.VK_F);
 		colorBar.getAccessibleContext().setAccessibleDescription("Changes Fractal Colors");
 		
-		JMenuItem colorA = new JMenuItem("Color A");
+		JMenuItem colorA = new JMenuItem("Blue");
 		colorA.getAccessibleContext().setAccessibleDescription("Changes Fractals to color A");
-		colorA.addActionListener((e) -> changeColor(1)); //null for now
+		colorA.addActionListener((e) -> changeColor(1));
 		colorBar.add(colorA);
 		
-		JMenuItem colorB = new JMenuItem("Color B");
+		JMenuItem colorB = new JMenuItem("Gray");
 		colorB.getAccessibleContext().setAccessibleDescription("Changes Fractals to color B");
-		colorB.addActionListener((e) -> changeColor(2)); //null for now
+		colorB.addActionListener((e) -> changeColor(2));
 		colorBar.add(colorB);
 		
-		JMenuItem colorC = new JMenuItem("Color C");
+		JMenuItem colorC = new JMenuItem("Rainbow");
 		colorC.getAccessibleContext().setAccessibleDescription("Changes Fractals to color C");
-		colorC.addActionListener((e) -> changeColor(3)); //null for now
+		colorC.addActionListener((e) -> changeColor(3));
 		colorBar.add(colorC);
 		
-		JMenuItem colorD = new JMenuItem("Color D");
+		JMenuItem colorD = new JMenuItem("Green");
 		colorD.getAccessibleContext().setAccessibleDescription("Changes Fractals to color D");
-		colorD.addActionListener((e) -> changeColor(4)); //null for now
+		colorD.addActionListener((e) -> changeColor(4));
 		colorBar.add(colorD);
 		
 		_menuBar.add(colorBar);
@@ -133,9 +133,9 @@ public class FractalViewer extends JFrame{
 		menu = new JMenu("Options");
 		menu.setMnemonic(KeyEvent.VK_F);
 		menu.getAccessibleContext().setAccessibleDescription("Optional Edits");
-		JMenuItem escapeTime = new JMenuItem("Change Escape Time");
-		escapeTime.getAccessibleContext().setAccessibleDescription("Change the escape time for the fractal");
-		escapeTime.addActionListener((e)->{ 
+		JMenuItem escapeDistance = new JMenuItem("Change Escape Distance");
+		escapeDistance.getAccessibleContext().setAccessibleDescription("Change the escape time for the fractal");
+		escapeDistance.addActionListener((e)->{ 
 			boolean wrong = true;
 			while(wrong) {
 				wrong = false;
@@ -152,7 +152,7 @@ public class FractalViewer extends JFrame{
 				} catch (NullPointerException e2){}
 			}
 		});
-		menu.add(escapeTime);
+		menu.add(escapeDistance);
 		JMenuItem item = new JMenuItem("Change Color Density");
 		item.getAccessibleContext().setAccessibleDescription("Change the amount of colors in the fractal");
 		item.addActionListener((e) -> {
