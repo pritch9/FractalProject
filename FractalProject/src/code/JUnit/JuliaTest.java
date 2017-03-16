@@ -56,8 +56,8 @@ public class JuliaTest {
 	public void test10Escapes(){
 		_julia.setEscapeDistance(3.0);
 		_points = _julia.getPoints();
-		int passes = _points[_julia.getCol(1.45)][_julia.getRow(-0.135)];
-		assertTrue("Expected passes to be >= 10, but was " + passes, passes >= 10);
+		int passes = _points[_julia.getCol(1.4538160469667272)][_julia.getRow(-0.13502935420743645)];
+		assertEquals(10, passes);
 		_julia.setEscapeDistance(2.0);
 		_points = _julia.getPoints();
 	}
