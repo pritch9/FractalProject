@@ -50,7 +50,7 @@ public class MandelbrotTest {
 	@Test
 	public void testSingleEscapes(){
 		System.out.println("Mand");
-		System.out.println(_mand.getCol(0.5946289062500001));
+		System.out.println((0.5946289062500001 - (-2.15)) / ((2.75) / 512) + "  " + ((2.75) / 512));
 		System.out.println(_mand.getRow(1.2949218750000122));
 		System.out.println("_---");
 		assertEquals(1, _points[_mand.getCol(0.5946289062500001)][_mand.getRow(1.2949218750000122)]);
