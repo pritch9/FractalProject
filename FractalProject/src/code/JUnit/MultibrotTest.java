@@ -1,7 +1,6 @@
 package code.JUnit;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -10,8 +9,6 @@ import code.Fractals.Multibrot;
 
 public class MultibrotTest {
 	
-	// [x] [y]
-	private int[][] _points;
 	private Multibrot _multi;
 	private int _max;
 	
@@ -19,7 +16,6 @@ public class MultibrotTest {
 	public void setup(){
 		_multi = new Multibrot(512,512);
 		_max = _multi.getMaxEscapes();
-		_points = _multi.getPoints();
 	}
 	
 	@Test
@@ -44,32 +40,26 @@ public class MultibrotTest {
 	
 	@Test
 	public void testMaxEscapes(){
-		assertEquals(_max, _points[_multi.getCol(0.5859375)][_multi.getRow(0.24375000000000108)]);
+		assertEquals(_max, _multi.getEscapeTime(0.5859375, 0.24375000000000108));
 	}
 	
 	@Test
 	public void testSingleEscapes(){
-		assertEquals(1, _points[_multi.getCol(0.9921875)][_multi.getRow(1.05625)]);
+		assertEquals(1, _multi.getEscapeTime(0.9921875, 1.05625));
 	}
 	
 	@Test
 	public void test10Escapes(){
 		_multi.setEscapeDistance(3.0);
-		_points = _multi.getPoints();
-		System.out.println(_multi.getCol(0.7025440313111545));
-		System.out.println(_multi.getRow(-0.5520547945205528));
-		int passes = _points[_multi.getCol(0.7025440313111545)][_multi.getRow(-0.5520547945205528)];
+		int passes = _multi.getEscapeTime(0.6953125, -0.533203125);
 		assertEquals(10, passes);
 		_multi.setEscapeDistance(2.0);
-		_points = _multi.getPoints();
 	}
 	
 	@Test
 	public void testCorrectArrayLength(){
-		assertEquals(512, _points.length);
-		assertEquals(512, _points[0].length);
-		assertEquals(512, _points[256].length);
-		assertEquals(512, _points[511].length);
+		assertEquals(512, _multi.getPoints().length);
+		assertEquals(512, _multi.getPoints()[0].length);
 	}
 
 }

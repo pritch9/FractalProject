@@ -10,8 +10,7 @@ import code.Fractals.BurningShip;
 
 public class BurningShipTest {
 	
-	// [x] [y]
-	private int[][] _points;
+
 	private BurningShip _burn;
 	private int _max;
 	
@@ -19,7 +18,6 @@ public class BurningShipTest {
 	public void setup(){
 		_burn = new BurningShip(512,512);
 		_max = _burn.getMaxEscapes();
-		_points = _burn.getPoints();
 	}
 	
 	@Test
@@ -44,34 +42,30 @@ public class BurningShipTest {
 	
 	@Test
 	public void testMaxEscapes(){
-		assertEquals(_max, _points[_burn.getCol(-1.7443359374999874)][_burn.getRow(-0.017451171875000338)]);
+		assertEquals(_max, _burn.getEscapeTime(-1.7443359374999874, -0.017451171875000338));
 	}
 	
 	@Test
 	public void test10Escapes(){
 		_burn.setEscapeDistance(3.0);
-		_points = _burn.getPoints();
-		int passes = _points[_burn.getCol(-1.701)][_burn.getRow(0.0030136986301371603)];
+		int passes = _burn.getEscapeTime(-1.701, 0.0030136986301371603);
 		assertEquals(10, passes);
 		_burn.setEscapeDistance(2.0);
-		_points = _burn.getPoints();
 	}
 	
 	@Test
 	public void testSingleEscapes(){
-		for(int x = 0; x < _points.length; x++){
-			for(int y = 0; y < _points[x].length; y++){
-				assertTrue(_points[x][y] > 1);
+		for(int x = 0; x < _burn.getPoints().length; x++){
+			for(int y = 0; y < _burn.getPoints()[x].length; y++){
+				assertTrue(_burn.getEscapeTime(x, y) > 1);
 			}
 		}
 	}
 	
 	@Test
 	public void testCorrectArrayLength(){
-		assertEquals(512, _points.length);
-		assertEquals(512, _points[0].length);
-		assertEquals(512, _points[256].length);
-		assertEquals(512, _points[511].length);
+		assertEquals(512, _burn.getPoints().length);
+		assertEquals(512, _burn.getPoints()[0].length);
 	}
 
 }

@@ -1,7 +1,6 @@
 package code.JUnit;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -10,8 +9,7 @@ import code.Fractals.Julia;
 
 public class JuliaTest {
 	
-	// [x] [y]
-	private int[][] _points;
+
 	private Julia _julia;
 	private int _max;
 	
@@ -19,7 +17,6 @@ public class JuliaTest {
 	public void setup(){
 		_julia = new Julia(512,512);
 		_max = _julia.getMaxEscapes();
-		_points = _julia.getPoints();
 	}
 	
 	@Test
@@ -44,30 +41,26 @@ public class JuliaTest {
 	
 	@Test
 	public void testMaxEscapes(){
-		assertEquals(_max, _points[_julia.getCol(1.0492187499999897)][_julia.getRow(-0.234375)]);
+		assertEquals(_max, _julia.getEscapeTime(1.0492187499999897, -0.234375));
 	}
 	
 	@Test
 	public void testSingleEscapes(){
-		assertEquals(1, _points[_julia.getCol(1.6933593749999853)][_julia.getRow(0.9765625)]);
+		assertEquals(1, _julia.getEscapeTime(1.6933593749999853, 0.9765625));
 	}
 	
 	@Test
 	public void test10Escapes(){
 		_julia.setEscapeDistance(3.0);
-		_points = _julia.getPoints();
-		int passes = _points[_julia.getCol(1.4538160469667272)][_julia.getRow(-0.13502935420743645)];
+		int passes = _julia.getEscapeTime(1.4609374999999998, -0.12109375); // [475][221] values used: [>][<]
 		assertEquals(10, passes);
 		_julia.setEscapeDistance(2.0);
-		_points = _julia.getPoints();
 	}
 	
 	@Test
 	public void testCorrectArrayLength(){
-		assertEquals(512, _points.length);
-		assertEquals(512, _points[0].length);
-		assertEquals(512, _points[256].length);
-		assertEquals(512, _points[511].length);
+		assertEquals(512, _julia.getPoints().length);
+		assertEquals(512, _julia.getPoints()[0].length);
 	}
 
 }

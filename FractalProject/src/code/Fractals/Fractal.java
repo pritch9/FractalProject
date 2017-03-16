@@ -13,6 +13,11 @@ public abstract class Fractal {
 	private int _rows, _cols;
 	
 	/**
+	 * 2D array storing escape times
+	 */
+	private int[][] _points;
+	
+	/**
 	 * Name of fractal set
 	 */
 	private String _name;
@@ -22,6 +27,9 @@ public abstract class Fractal {
 	 */
 	private double _upperX, _lowerX, _upperY, _lowerY;
 
+	/**
+	 * Escape distance for calculating the Fractal
+	 */
 	private double _escapeDistance;
 
 	/**
@@ -69,6 +77,8 @@ public abstract class Fractal {
 		_cols = cols;
 
 		setBounds(lowerX, upperX, lowerY, upperY);
+		
+		calculatePoints();
 	}
 
 	/**
@@ -120,7 +130,14 @@ public abstract class Fractal {
 	 * @return int[][] points
 	 */
 	public int[][] getPoints() {
-		int[][] points = new int[_cols][_rows]; // deine the return array
+		return _points;
+	}
+	
+	/**
+	 * Call to calculate points.  
+	 */
+	private void calculatePoints(){
+		_points = new int[_cols][_rows]; // deine the return array
 												// [X][Y]
 
 		double xCalc, yCalc; // deine calculation local variables
@@ -135,12 +152,11 @@ public abstract class Fractal {
 
 				int passes = calculate(xCalc, yCalc);
 
-				points[cols][rows] = passes; // When the while loop escapes, set
+				_points[cols][rows] = passes; // When the while loop escapes, set
 												// the passes in the points 2D
 												// array
 			}
 		}
-		return points; // returned illed points array
 	}
 
 	/**
@@ -177,6 +193,7 @@ public abstract class Fractal {
 	 */
 	public void setEscapeDistance(double escapeDistance) {
 		_escapeDistance = escapeDistance;
+		calculatePoints();
 	}
 
 	/**
@@ -243,5 +260,13 @@ public abstract class Fractal {
 	
 	public int getNumCols(){
 		return this._cols;
+	}
+	
+	public int getEscapeTime(int col, int row){
+		return _points[col][row];
+	}
+	
+	public int getEscapeTime(double x, double y){
+		return getEscapeTime(getCol(x), getRow(y));
 	}
 }

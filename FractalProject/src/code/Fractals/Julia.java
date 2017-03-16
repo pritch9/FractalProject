@@ -20,7 +20,7 @@ public class Julia extends Fractal {
 		dist = Math.sqrt(tX*tX + tY*tY);
 		while(dist <= this.getEscapeDistance() && passes < this.getMaxEscapes()){
 			tmp = tX*tX - tY*tY + -0.72689;
-			tY = 2.0 * tX * tY + 0.188887;
+			tY = 2.0*tX*tY + 0.188887;
 			tX = tmp;
 			dist = Math.sqrt(tX*tX + tY*tY);
 			passes++;

@@ -1,7 +1,6 @@
 package code.JUnit;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -10,8 +9,6 @@ import code.Fractals.Mandelbrot;
 
 public class MandelbrotTest {
 	
-	// [x] [y]
-	private int[][] _points;
 	private Mandelbrot _mand;
 	private int _max;
 	
@@ -19,7 +16,6 @@ public class MandelbrotTest {
 	public void setup(){
 		_mand = new Mandelbrot(512, 512);
 		_max = _mand.getMaxEscapes();
-		_points = _mand.getPoints();
 	}
 	
 	@Test
@@ -44,30 +40,26 @@ public class MandelbrotTest {
 	
 	@Test
 	public void testMaxEscapes(){
-		assertEquals(_max, _points[_mand.getCol(0.3207031250000001)][_mand.getRow(-0.07109374999999386)]);
+		assertEquals(_max, _mand.getEscapeTime(0.3207031250000001, -0.07109374999999386));
 	}
 	
 	@Test
 	public void testSingleEscapes(){
-		assertEquals(1, _points[_mand.getCol(0.5946289062500001)][_mand.getRow(1.2949218750000122)]);
+		assertEquals(1, _mand.getEscapeTime(0.5946289062500001, 1.2949218750000122));
 	}
 	
 	@Test
 	public void test10Escapes(){
 		_mand.setEscapeDistance(3.0);
-		_points = _mand.getPoints();
-		int passes = _points[_mand.getCol(0.46007827788650374)][_mand.getRow(-0.3383561643835661)];
+		int passes = _mand.getEscapeTime(0.46007827788650374, -0.3383561643835661);
 		assertEquals(10, passes);
 		_mand.setEscapeDistance(2.0);
-		_points = _mand.getPoints();
 	}
 	
 	@Test
 	public void testCorrectArrayLength(){
-		assertEquals(512, _points.length);
-		assertEquals(512, _points[0].length);
-		assertEquals(512, _points[256].length);
-		assertEquals(512, _points[511].length);
+		assertEquals(512, _mand.getPoints().length);
+		assertEquals(512, _mand.getPoints()[0].length);
 	}
 
 }

@@ -22,6 +22,11 @@ import code.Fractals.Multibrot;
 import edu.buffalo.fractal.FractalPanel;
 
 public class FractalViewer extends JFrame{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5603717614547419262L;
+	
 	private JMenuBar _menuBar;
 	private Fractal[] _fractals;
 	private Fractal _current;
@@ -59,22 +64,6 @@ public class FractalViewer extends JFrame{
 	private void setupJMenuBar() {
 		
 		_menuBar = new JMenuBar();
-		
-		/*
-		
-		// Fractal menu
-		menu = new JMenu("Fractals"); // new JMenu
-		menu.setMnemonic(KeyEvent.VK_F); // not sure if this does anything
-		menu.getAccessibleContext().setAccessibleDescription("I scream for Ice Cream!"); // description for menu
-		
-		// fractal menu items
-		menuItem = new JMenuItem("Mandelbrot Set"); // Menu option text
-		menuItem.getAccessibleContext().setAccessibleDescription("Show the Mandelbrot Set in the viewer"); // menu option description
-		menuItem.addActionListener((e)->{ changeFractal(MANDELBROT); }); // action listener
-		menu.add(menuItem); // add the item to the menu
-
-		
-		*/
 		
         JMenu file = new JMenu("File");
         _menuBar.add(file);
@@ -173,24 +162,21 @@ public class FractalViewer extends JFrame{
 	}
 	
 	private void changeColor(int num){
+		int colors = 255;
 		switch(num){
 		case 1:
-			_fractalPanel.setIndexColorModel(ColorModelFactory.createBluesColorModel(50));
+			_fractalPanel.setIndexColorModel(ColorModelFactory.createBluesColorModel(colors));
 			break;
 		case 2:
-			_fractalPanel.setIndexColorModel(ColorModelFactory.createGrayColorModel(50));
+			_fractalPanel.setIndexColorModel(ColorModelFactory.createGrayColorModel(colors));
 			break;
 		case 3:
-			_fractalPanel.setIndexColorModel(ColorModelFactory.createRainbowColorModel(50));
+			_fractalPanel.setIndexColorModel(ColorModelFactory.createRainbowColorModel(colors));
 			break;
 		case 4:
-			_fractalPanel.setIndexColorModel(ColorModelFactory.createGreenColorModel(50));
+			_fractalPanel.setIndexColorModel(ColorModelFactory.createGreenColorModel(colors));
 			break;
 		}
 		_fractalPanel.updateImage(_current.getPoints());
-	}
-	
-	private void changeEscapeDistance(double dist){
-		_current.setEscapeDistance(dist);
 	}
 }
