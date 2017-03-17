@@ -1,0 +1,18 @@
+UPDATE:
+
+How to update the escape distance of the fractal.
+
+
+On the JMenuBar, there is a JMenu labeled Options. Clicking that will allow the user to 
+select the Change Escape Distance JMenuItem.
+
+Clicking on the Change Escape Distance JMenuItem will cause a JOptionPane to pop up and 
+prompt the user to enter a new escape distance.
+
+On the JOptionPane, the user can type in a numerical value and click the OK button 
+to update the escape distance.
+
+The user can also click the Cancel button to not change the escape distance.
+
+In cases where the escape distance entered by the user are not valid, the program will 
+reject that input and ask the user to re-enter the escape distance.

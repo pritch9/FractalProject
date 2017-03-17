@@ -1,0 +1,25 @@
+RUN:
+
+How to know if the program is running correctly.
+
+
+Find Driver.java in the code.UI package and runs it as a Java Application.
+
+A JFrame with a JMenuBar and JPanel should pop up, displaying the Mandelbrot Set Fractal
+with rainbow colors.
+
+On the JMenuBar there should be 4 JMenus, which are File, Fractals, Colors, and Options
+respectively.
+
+Clicking on File will cause the JMenuItem Exit to appear. Selecting Exit will terminate the
+program immediately.
+
+Clicking on Fractals will allow the user to select from 4 JMenuItems, which are Mandelbrot
+Set, Julia Set, Burning Ship Set, and Multibrot Set. The display will then update to show 
+the respective fractal.
+
+Clicking on Colors will allow the user to select from the colors of Blue, Gray, Rainbow, or 
+Green. The display will then update to show the fractal in the designated color.
+
+Clicking on Options will allow the user to change Escape Distance. See update.txt for more
+details.
