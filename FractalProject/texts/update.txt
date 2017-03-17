@@ -16,3 +16,7 @@ The user can also click the Cancel button to not change the escape distance.
 
 In cases where the escape distance entered by the user are not valid, the program will 
 reject that input and ask the user to re-enter the escape distance.
+
+To change the escape distance, we take the input given by the user, try to parse it as a double, then perform checks for valid value.
+A valid value is a double greater than 0.  We take the double value and pass it to changeED(value) which changes the distance for the current fractal
+and updates the fractalpanel with newly generated escape time values.
