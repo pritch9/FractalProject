@@ -2,10 +2,18 @@ package code.Fractals;
 
 public class BurningShip extends Fractal{
 	
+	/**
+	 * Most basic constructor
+	 */
 	public BurningShip(){
 		this(512, 512);
 	}
 	
+	/**
+	 * Constructor with dimension parameters
+	 * @param rows number of rows
+	 * @param cols number of columns
+	 */
 	public BurningShip(int rows, int cols){
 		super("Burning Ship", rows, cols, -1.8, -1.7, -0.08, 0.025);
 	}

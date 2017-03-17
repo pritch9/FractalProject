@@ -2,10 +2,18 @@ package code.Fractals;
 
 public class Julia extends Fractal {
 	
+	/**
+	 * Most basic constructor
+	 */
 	public Julia(){
 		this(512, 512);
 	}
 	
+	/**
+	 * Constructor with dimension parameters
+	 * @param rows number of rows
+	 * @param cols number of columns
+	 */
 	public Julia(int rows, int cols){
 		super("Julia", rows, cols, 1.7,-1.7,1.0,-1.0);
 	}

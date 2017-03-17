@@ -2,10 +2,18 @@ package code.Fractals;
 
 public class Multibrot extends Fractal{
 	
+	/**
+	 * Most basic constructor
+	 */
 	public Multibrot(){
 		this(512, 512);
 	}
 	
+	/**
+	 * Constructor with dimension parameters
+	 * @param rows number of rows
+	 * @param cols number of columns
+	 */
 	public Multibrot(int rows, int cols){
 		super("Multibrot", rows, cols,-1,1,-1.3,1.3);
 	}

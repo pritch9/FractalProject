@@ -27,7 +27,7 @@ public class MultibrotTest {
 		assertEquals(256, _multi.getCol(0.0));
 		assertEquals(512, _multi.getCol(1.0));
 	}
-
+	
 	@Test
 	public void testYCoordinates(){
 		assertEquals(-1.3, _multi.getY(0), 0.001);

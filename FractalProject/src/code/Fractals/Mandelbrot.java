@@ -2,10 +2,18 @@ package code.Fractals;
 
 public class Mandelbrot extends Fractal{
 	
+	/**
+	 * Most basic constructor
+	 */
 	public Mandelbrot(){
 		this(512, 512);
 	}
 	
+	/**
+	 * Constructor with dimension parameters
+	 * @param rows number of rows
+	 * @param cols number of columns
+	 */
 	public Mandelbrot(int rows, int cols){
 		super("Mandelbrot", rows, cols, 0.6, -2.15, 1.3, -1.3);
 	}
