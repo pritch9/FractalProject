@@ -164,7 +164,7 @@ public class FractalViewer extends JFrame {
 		menu.setMnemonic(KeyEvent.VK_F);
 		menu.getAccessibleContext().setAccessibleDescription("Optional Edits");
 		JMenuItem escapeDistance = new JMenuItem("Change Escape Distance");
-		escapeDistance.getAccessibleContext().setAccessibleDescription("Change the escape time for the fractal");
+		escapeDistance.getAccessibleContext().setAccessibleDescription("Change the escape distance for the fractal");
 		escapeDistance.addActionListener((e) -> {
 			boolean wrong = true;
 			while (wrong) {
