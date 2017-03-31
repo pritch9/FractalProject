@@ -123,8 +123,10 @@ public class FractalViewer extends JFrame {
 				} else {
 					g = y - zoomer.y;
 				}
-				zoomer.width = g;
-				zoomer.height = g;
+				g = Math.abs(g);
+				
+				zoomer.width = (x > zoomer.x) ? g : -g;
+				zoomer.height = (y > zoomer.y) ? g : -g;
 				_fractalPanel.drawRectangle(zoomer);
 			}
 
