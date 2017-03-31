@@ -1,5 +1,7 @@
 package code.Fractals;
 
+import java.awt.Point;
+
 public abstract class Fractal {
 
 	/**
@@ -26,6 +28,10 @@ public abstract class Fractal {
 	 * Bounds
 	 */
 	private double _upperX, _lowerX, _upperY, _lowerY;
+	
+	private double _upperXO, _lowerXO, _upperYO, _lowerYO;
+	
+	private final double ZOOM = 0.1;
 
 	/**
 	 * Escape distance for calculating the Fractal
@@ -122,6 +128,13 @@ public abstract class Fractal {
 		_lowerX = lowerX;
 		_upperY = upperY;
 		_lowerY = lowerY;
+		
+		if(_upperXO == 0){
+			_upperXO = _upperX;
+			_lowerXO = _lowerX;
+			_upperYO = _upperY;
+			_lowerYO = _lowerY;
+		}
 	}
 
 	/**
@@ -268,5 +281,21 @@ public abstract class Fractal {
 	
 	public int getEscapeTime(double x, double y){
 		return getEscapeTime(getCol(x), getRow(y));
+	}
+	
+	public void zoom(Point p1, Point p2){
+		System.out.println(p1.x + " " + p1.y + " " + p2.x + " " + p2.y);
+		setBounds(getX(p1.x), getX(p2.x), getY(p1.y), getY(p2.y));
+		System.out.println("hel");
+		
+		this.calculatePoints();
+	}
+
+	public void reset() {
+		this._lowerX = _lowerXO;
+		this._upperX = _upperXO;
+		this._lowerY = _lowerYO;
+		this._upperY = _upperYO;
+		this.calculatePoints();
 	}
 }

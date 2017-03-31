@@ -1,10 +1,17 @@
 package code.UI;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -27,6 +34,8 @@ public class FractalViewer extends JFrame {
 	 * 
 	 */
 	private static final long serialVersionUID = 5603717614547419262L;
+	
+	private static FractalViewer _fractalViewer;
 
 	/**
 	 * Menubar
@@ -57,11 +66,15 @@ public class FractalViewer extends JFrame {
 	 * Current color scheme number
 	 */
 	private int _colorNumber;
+	
+	private Rectangle zoomer;
+	private volatile boolean zooming = false;
 
 	/**
 	 * Constructor setting up FractalViewer
 	 */
 	public FractalViewer() {
+		_fractalViewer = this;
 		setupFractals();
 		setupJMenuBar();
 		setupFractalPanel();
@@ -97,6 +110,67 @@ public class FractalViewer extends JFrame {
 		_fractalPanel.setMinimumSize(_fractalPanel.getSize());
 		_fractalPanel.setMaximumSize(_fractalPanel.getSize());
 		_fractalPanel.setPreferredSize(_fractalPanel.getSize());
+		
+		_fractalPanel.addMouseMotionListener(new MouseMotionListener(){
+			
+			@Override
+			public void mouseDragged(MouseEvent arg0) {
+				int x = arg0.getX();
+				int y = arg0.getY();
+				int g = 0;
+				if(x > y){
+					g = x - zoomer.x;
+				} else {
+					g = y - zoomer.y;
+				}
+				zoomer.width = g;
+				zoomer.height = g;
+				_fractalPanel.drawRectangle(zoomer);
+			}
+
+			@Override
+			public void mouseMoved(MouseEvent arg0) {}
+		
+		});
+		
+		_fractalPanel.addMouseListener(new MouseListener(){
+
+			@Override
+			public void mouseClicked(MouseEvent e) {}
+
+			@Override
+			public void mouseEntered(MouseEvent e) {}
+
+			@Override
+			public void mouseExited(MouseEvent e) {}
+
+			@Override
+			public void mousePressed(MouseEvent e) {
+				System.out.println("preseed");
+				zoomer = new Rectangle(e.getPoint());
+			}
+
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				Point p1 = new Point(zoomer.x, zoomer.y);
+				Point p2 = new Point(zoomer.width + zoomer.x, zoomer.height + zoomer.y);
+				zoomer = null;
+				_fractalPanel.removeRect();
+				_current.zoom(p1, p2);
+				_fractalPanel.updateImage(_current.getPoints());
+			}
+		
+		});
+	}
+	
+	@Override
+	public void paint(Graphics g){
+		super.paint(g);
+		if(zoomer != null){
+			System.out.println("Zooming");
+			g.setColor(Color.BLACK);
+			g.drawRect(zoomer.x, zoomer.y, zoomer.width, zoomer.height);
+		}
 	}
 
 	/**
@@ -205,6 +279,14 @@ public class FractalViewer extends JFrame {
 			}
 		});
 		menu.add(item); // add item
+		
+		item = new JMenuItem("Reset Zoom"); // Change number of colors
+		item.getAccessibleContext().setAccessibleDescription("back to normal");
+		item.addActionListener((e) -> {
+			_current.reset();
+			_fractalPanel.updateImage(_current.getPoints());
+		});
+		menu.add(item); // add item
 		_menuBar.add(menu); // add menu
 		this.setJMenuBar(_menuBar); // set menubar
 	}
@@ -275,4 +357,6 @@ public class FractalViewer extends JFrame {
 		_fractalPanel.updateImage(_current.getPoints());
 		_colorNumber = num;
 	}
+	
+	
 }
