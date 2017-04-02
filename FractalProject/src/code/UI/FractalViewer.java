@@ -239,6 +239,7 @@ public class FractalViewer extends JFrame {
 		menu = new JMenu("Options");
 		menu.setMnemonic(KeyEvent.VK_F);
 		menu.getAccessibleContext().setAccessibleDescription("Optional Edits");
+		
 		JMenuItem escapeDistance = new JMenuItem("Change Escape Distance");
 		escapeDistance.getAccessibleContext().setAccessibleDescription("Change the escape distance for the fractal");
 		escapeDistance.addActionListener((e) -> {
@@ -259,6 +260,28 @@ public class FractalViewer extends JFrame {
 			}
 		});
 		menu.add(escapeDistance); // add escape distance item
+		
+		JMenuItem maxEscapeTime = new JMenuItem("Change Max Escape Time");
+		maxEscapeTime.getAccessibleContext().setAccessibleDescription("Change the max escape time for the fractal");
+		maxEscapeTime.addActionListener((e) -> {
+			boolean wrong = true;
+			while (wrong) {
+				wrong = false;
+				String s = JOptionPane.showInputDialog("Enter a new max escape time ( > 0 )\n(default: 255)"); // pop up menu
+				try {
+					double d = Double.parseDouble(s); // convert to double
+					if (d > 0) {
+						changeMET(d); // if double is > 0, change max escape time
+					} else {
+						wrong = true; // re-open menu
+					}
+				} catch (NumberFormatException e1) { // not number
+					wrong = true; // re-open menu
+				} catch (NullPointerException e2) {} // exit or cancel
+			}
+		});
+		menu.add(maxEscapeTime); // add max escape time item
+		
 		JMenuItem item = new JMenuItem("Change Color Density"); // Change number of colors
 		item.getAccessibleContext().setAccessibleDescription("Change the number of colors in the fractal");
 		item.addActionListener((e) -> {
@@ -302,6 +325,18 @@ public class FractalViewer extends JFrame {
 		_fractalPanel.updateImage(_current.getPoints());
 	}
 
+	/**
+	 * Change max escape time
+	 * @param d new escape distance
+	 */
+	private void changeMET(double d) {
+		
+		// STILL CHANGES ESCAPE DISTANCE
+		// UNSURE OF HOW TO CHANGE MAX EXCAPE TIME
+		_current.setEscapeDistance(d);
+		_fractalPanel.updateImage(_current.getPoints());
+	}
+	
 	/**
 	 * Change number of colors
 	 * @param d new number of colors
