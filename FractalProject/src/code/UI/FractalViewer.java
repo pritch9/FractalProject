@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.Insets;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
@@ -27,6 +28,7 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.plaf.synth.SynthSplitPaneUI;
 
 import code.Fractals.BurningShip;
 import code.Fractals.Fractal;
@@ -85,9 +87,10 @@ public class FractalViewer extends JFrame {
 	 */
 	public FractalViewer() {
 		_fractalViewer = this;
+		this.setResizable(false);
+		setupFractalPanel();
 		setupFractals();
 		setupJMenuBar();
-		setupFractalPanel();
 		setupZoomMenu();
 		setupJFrame();
 	}
@@ -111,7 +114,14 @@ public class FractalViewer extends JFrame {
 		zoomIn.addActionListener((e) -> {
 			if(!zoom){
 				zoomOut.setEnabled(false);
-				new Thread(()->{zoomIn();}).start();
+				new Thread(new Runnable(){
+					public void run(){
+						if(_current.fullView()) {
+							zoomIn(_current.coolX, _current.coolY);
+						}
+						else zoomIn(_current.getX(), _current.getY());
+					}
+				}).start();
 			} else {
 				zoomOut.setEnabled(true);
 				zoom = false;
@@ -135,7 +145,7 @@ public class FractalViewer extends JFrame {
 	 */
 	private void setupFractalPanel() {
 		_fractalPanel = new FractalPanel();
-		this.changeColor(3);
+		_fractalPanel.setLayout(null);
 		this.add(_fractalPanel, BorderLayout.CENTER);
 	}
 
@@ -150,16 +160,12 @@ public class FractalViewer extends JFrame {
 				| UnsupportedLookAndFeelException e) {
 			e.printStackTrace();
 		}
+		this.validate();
 		this.pack();
 		this.setLocation((Toolkit.getDefaultToolkit().getScreenSize().width - this.getWidth()) / 2,
 				(Toolkit.getDefaultToolkit().getScreenSize().height - this.getHeight()) / 2);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		this.setResizable(false);
 		this.setVisible(true);
-		_fractalPanel.setMinimumSize(_fractalPanel.getSize());
-		_fractalPanel.setMaximumSize(_fractalPanel.getSize());
-		_fractalPanel.setPreferredSize(_fractalPanel.getSize());
-
 		_fractalPanel.addMouseMotionListener(new MouseMotionListener() {
 
 			@Override
@@ -189,7 +195,7 @@ public class FractalViewer extends JFrame {
 
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				System.out.println(_current.getX(e.getPoint().x) + "  " + _current.getY(e.getPoint().y));
+				System.out.println(_current.getX(e.getX()) + " " +  _current.getY(e.getY()));
 			}
 
 			@Override
@@ -208,7 +214,9 @@ public class FractalViewer extends JFrame {
 			@Override
 			public void mouseReleased(MouseEvent e) {
 				Point p1 = new Point(zoomer.x, zoomer.y);
+				System.out.println(zoomer.x + " " + zoomer.y);
 				Point p2 = new Point(zoomer.width + zoomer.x, zoomer.height + zoomer.y);
+				System.out.println(p2.x + " " + p2.y);
 				zoomer = null;
 				_fractalPanel.removeRect();
 				_current.zoom(p1, p2);
@@ -440,11 +448,12 @@ public class FractalViewer extends JFrame {
 	 */
 	private void setupFractals() {
 		_fractals = new Fractal[4];
-		_fractals[0] = new Mandelbrot();
-		_fractals[1] = new Julia();
-		_fractals[2] = new BurningShip();
-		_fractals[3] = new Multibrot();
+		_fractals[0] = new Mandelbrot(_fractalPanel.getWidth(), _fractalPanel.getHeight());
+		_fractals[1] = new Julia(_fractalPanel.getWidth(), _fractalPanel.getHeight());
+		_fractals[2] = new BurningShip(_fractalPanel.getWidth(), _fractalPanel.getHeight());
+		_fractals[3] = new Multibrot(_fractalPanel.getWidth(), _fractalPanel.getHeight());
 		_current = _fractals[0];
+		this.changeColor(3);
 	}
 
 	/**
@@ -479,17 +488,10 @@ public class FractalViewer extends JFrame {
 		if (_current.fullView())
 			zoomIn.setEnabled(true);
 	}
-
-	private void zoomIn(){
-		double x = -0.7466286958869421;
-		double y = 0.0951991875203021;
-		zoomIn(x, y);
-	}
 	
 	private void zoomIn(double x, double y) {
 		zoomIn.setText("Stop");
 		zoom = true;
-		int x1 = 0;
 		while(zoom) {
 			try {
 				SwingUtilities.invokeAndWait(() -> {

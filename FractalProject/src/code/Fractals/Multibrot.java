@@ -16,6 +16,8 @@ public class Multibrot extends Fractal{
 	 */
 	public Multibrot(int rows, int cols){
 		super("Multibrot", rows, cols,-1,1,-1.3,1.3);
+		this.coolX = -0.42777722573108784;
+		this.coolY = -0.012390222129229113;
 	}
 
 	@Override

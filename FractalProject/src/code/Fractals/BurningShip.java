@@ -16,6 +16,8 @@ public class BurningShip extends Fractal{
 	 */
 	public BurningShip(int rows, int cols){
 		super("Burning Ship", rows, cols, -1.8, -1.7, -0.08, 0.025);
+		this.coolX = -1.748492062910211;
+		this.coolY = -0.022531386833453692;
 	}
 
 	@Override

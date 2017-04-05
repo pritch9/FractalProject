@@ -16,6 +16,8 @@ public class Julia extends Fractal {
 	 */
 	public Julia(int rows, int cols){
 		super("Julia", rows, cols, 1.7,-1.7,1.0,-1.0);
+		this.coolX = -0.09998952442329354;
+		this.coolY = 0.6397321930046009;
 	}
 	
 	public int calculate(double xCalc, double yCalc){

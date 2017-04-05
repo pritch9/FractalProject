@@ -5,6 +5,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+import code.UI.PointRunner;
+
 public abstract class Fractal {
 
 	/**
@@ -16,6 +18,8 @@ public abstract class Fractal {
 	 * Dimensions of points
 	 */
 	private int _rows, _cols;
+	
+	public double coolX, coolY;
 
 	/**
 	 * 2D array storing escape times
@@ -31,6 +35,8 @@ public abstract class Fractal {
 	 * Bounds
 	 */
 	private double _upperX, _lowerX, _upperY, _lowerY;
+	
+	private double x, y;
 
 	private double _upperXO, _lowerXO, _upperYO, _lowerYO;
 
@@ -152,58 +158,41 @@ public abstract class Fractal {
 	 * Call to calculate points.
 	 */
 	private void calculatePoints() {
-		_points = new int[_cols][_rows]; // deine the return array
-											// [X][Y]
-		int[][] one = new int[_cols/2][_rows];
-		int[][] two = new int[_cols/2][_rows];
+		this.x = _upperX - ((_upperX-_lowerX)/2);
+		this.y = _upperY - ((_upperY-_lowerY)/2);
+		_points = new int[_cols][_rows]; // deine the return array// [X][Y]
+		
 		// The or loops iterate through the entire 2D array table
-		ExecutorService e = Executors.newFixedThreadPool(2);
-		Runnable juan = () -> {
-			double xCalc, yCalc; // deine calculation local variables
-			for (int cols = 0; cols < _cols / 2; cols++) { // x
-				for (int rows = 0; rows < _rows; rows++) { // y
-
-					// convert rows and cols to cartesian plot
-					xCalc = getX(cols);
-					yCalc = getY(rows);
-
-					int passes = calculate(xCalc, yCalc);
-
-					one[cols][rows] = passes; // When the while loop
-													// escapes, set
-													// the passes in the points
-													// 2D
-													// array
-				}
-			}
-		};
-		Runnable dos = () -> {
-			double xCalc, yCalc; // deine calculation local variables
-			for (int cols = 0; cols < _cols/2; cols++) { // x
-				for (int rows = 0; rows < _rows; rows++) { // y
-					// convert rows and cols to cartesian plot
-					xCalc = getX(cols+256);
-					yCalc = getY(rows);
-
-					int passes = calculate(xCalc, yCalc);
-
-					two[cols][rows] = passes; // When the while loop
-													// escapes, set
-													// the passes in the points
-													// 2D
-													// array
-				}
-			}
-		};
-		e.execute(juan);
+		ExecutorService e = Executors.newFixedThreadPool(8);
+		PointRunner uno = new PointRunner(this, _cols, 8, 0);
+		PointRunner dos = new PointRunner(this, _cols, 8, 1);
+		PointRunner tres = new PointRunner(this, _cols, 8, 2);
+		PointRunner cuatro = new PointRunner(this, _cols, 8, 3);
+		PointRunner cinco = new PointRunner(this, _cols, 8, 4);
+		PointRunner seis = new PointRunner(this, _cols, 8, 5);
+		PointRunner siete = new PointRunner(this, _cols, 8, 6);
+		PointRunner ocho = new PointRunner(this, _cols, 8, 7);
+		e.execute(uno);
 		e.execute(dos);
+		e.execute(tres);
+		e.execute(cuatro);
+		e.execute(cinco);
+		e.execute(seis);
+		e.execute(siete);
+		e.execute(ocho);
 		e.shutdown();
 		try {
 			e.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
 		} catch (InterruptedException e2) {
 			e2.printStackTrace();
 		}
-		_points = this.append(one, two);
+		int[][] k = this.append(uno.getPoints(), dos.getPoints());
+		int[][] l = this.append(tres.getPoints(), cuatro.getPoints());
+		int[][] m = this.append(cinco.getPoints(), seis.getPoints());
+		int[][] n = this.append(siete.getPoints(), ocho.getPoints());
+		int[][] o = this.append(k, l);
+		int[][] p = this.append(m, n);
+		_points = this.append(o,p);
 	}
 
 	/**
@@ -323,20 +312,31 @@ public abstract class Fractal {
 
 		this.calculatePoints();
 	}
+	
+	public double getX(){
+		return this.x;
+	}
+	
+	public double getY(){
+		return this.y;
+	}
 
 	public int[][] getNextZoomIn(double x, double y) {
 		double w = _upperX - _lowerX;
 		double h = _upperY - _lowerY;
 
-		w -= w * .1;
-		h -= h * .1;
+		w -= w * .05;
+		h -= h * .05;
 
 		_lowerX = x - w / 2;
 		_upperX = x + w / 2;
 		_lowerY = y - h / 2;
 		_upperY = y + h / 2;
-
+		long startTime = System.nanoTime();
 		this.calculatePoints();
+		long end = System.nanoTime();
+		
+		System.out.println((end-startTime)/1000000 + "ms");
 		return this._points;
 	}
 
@@ -348,12 +348,9 @@ public abstract class Fractal {
 		this.calculatePoints();
 	}
 
-	public boolean hasNextZoom() {
-		return _lowerX != _lowerXO && _upperX != _upperXO && _lowerY != _lowerXO && _upperY != _upperXO;
-	}
 
 	public boolean fullView() {
-		return _lowerX == _lowerXO && _upperX == _upperXO && _lowerY == _lowerXO && _upperY == _upperXO;
+		return _lowerX == _lowerXO && _upperX == _upperXO && _lowerY == _lowerYO && _upperY == _upperYO;
 	}
 	
 	/**
