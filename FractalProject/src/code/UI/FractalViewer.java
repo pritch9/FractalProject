@@ -2,6 +2,8 @@ package code.UI;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.Rectangle;
@@ -12,12 +14,16 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.lang.reflect.InvocationTargetException;
 
+import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -34,7 +40,7 @@ public class FractalViewer extends JFrame {
 	 * 
 	 */
 	private static final long serialVersionUID = 5603717614547419262L;
-	
+
 	private static FractalViewer _fractalViewer;
 
 	/**
@@ -66,9 +72,13 @@ public class FractalViewer extends JFrame {
 	 * Current color scheme number
 	 */
 	private int _colorNumber;
-	
+
 	private Rectangle zoomer;
-	private volatile boolean zooming = false;
+
+	private JButton zoomIn;
+	private JButton zoomOut;
+	private JLabel message;
+	private volatile boolean zoom = false;
 
 	/**
 	 * Constructor setting up FractalViewer
@@ -78,7 +88,46 @@ public class FractalViewer extends JFrame {
 		setupFractals();
 		setupJMenuBar();
 		setupFractalPanel();
+		setupZoomMenu();
 		setupJFrame();
+	}
+
+	private void setupZoomMenu() {
+		JPanel b = new JPanel();
+		b.setLayout(new BorderLayout());
+		b.setBackground(Color.WHITE);
+		b.setOpaque(true);
+		JPanel z = new JPanel();
+		z.setLayout(new FlowLayout());
+		zoomOut = new JButton("Zoom Out");
+		zoomOut.addActionListener((e) -> {
+			zoomOut();
+			zoomIn.setText("Zoom In");
+		});
+
+		z.add(zoomOut);
+
+		zoomIn = new JButton("Zoom In");
+		zoomIn.addActionListener((e) -> {
+			if(!zoom){
+				zoomOut.setEnabled(false);
+				new Thread(()->{zoomIn();}).start();
+			} else {
+				zoomOut.setEnabled(true);
+				zoom = false;
+				zoomIn.setText("Continue");
+			}
+		});
+
+		z.add(zoomIn);
+		b.add(z, BorderLayout.SOUTH);
+		JPanel top = new JPanel();
+		message = new JLabel("Zoom Board");
+		message.setFont(new Font("Times New Roman", Font.BOLD, 24));
+		top.add(message);
+		
+		b.add(top, BorderLayout.NORTH);
+		this.add(b, BorderLayout.SOUTH);
 	}
 
 	/**
@@ -110,45 +159,49 @@ public class FractalViewer extends JFrame {
 		_fractalPanel.setMinimumSize(_fractalPanel.getSize());
 		_fractalPanel.setMaximumSize(_fractalPanel.getSize());
 		_fractalPanel.setPreferredSize(_fractalPanel.getSize());
-		
-		_fractalPanel.addMouseMotionListener(new MouseMotionListener(){
-			
+
+		_fractalPanel.addMouseMotionListener(new MouseMotionListener() {
+
 			@Override
 			public void mouseDragged(MouseEvent arg0) {
 				int x = arg0.getX();
 				int y = arg0.getY();
 				int g = 0;
-				if(x > y){
+				if (x > y) {
 					g = x - zoomer.x;
 				} else {
 					g = y - zoomer.y;
 				}
 				g = Math.abs(g);
-				
+
 				zoomer.width = (x > zoomer.x) ? g : -g;
 				zoomer.height = (y > zoomer.y) ? g : -g;
 				_fractalPanel.drawRectangle(zoomer);
 			}
 
 			@Override
-			public void mouseMoved(MouseEvent arg0) {}
-		
+			public void mouseMoved(MouseEvent arg0) {
+			}
+
 		});
-		
-		_fractalPanel.addMouseListener(new MouseListener(){
+
+		_fractalPanel.addMouseListener(new MouseListener() {
 
 			@Override
-			public void mouseClicked(MouseEvent e) {}
+			public void mouseClicked(MouseEvent e) {
+				System.out.println(_current.getX(e.getPoint().x) + "  " + _current.getY(e.getPoint().y));
+			}
 
 			@Override
-			public void mouseEntered(MouseEvent e) {}
+			public void mouseEntered(MouseEvent e) {
+			}
 
 			@Override
-			public void mouseExited(MouseEvent e) {}
+			public void mouseExited(MouseEvent e) {
+			}
 
 			@Override
 			public void mousePressed(MouseEvent e) {
-				System.out.println("preseed");
 				zoomer = new Rectangle(e.getPoint());
 			}
 
@@ -161,14 +214,14 @@ public class FractalViewer extends JFrame {
 				_current.zoom(p1, p2);
 				_fractalPanel.updateImage(_current.getPoints());
 			}
-		
+
 		});
 	}
-	
+
 	@Override
-	public void paint(Graphics g){
+	public void paint(Graphics g) {
 		super.paint(g);
-		if(zoomer != null){
+		if (zoomer != null) {
 			System.out.println("Zooming");
 			g.setColor(Color.BLACK);
 			g.drawRect(zoomer.x, zoomer.y, zoomer.width, zoomer.height);
@@ -239,14 +292,17 @@ public class FractalViewer extends JFrame {
 		menu = new JMenu("Options");
 		menu.setMnemonic(KeyEvent.VK_F);
 		menu.getAccessibleContext().setAccessibleDescription("Optional Edits");
-		
+
 		JMenuItem escapeDistance = new JMenuItem("Change Escape Distance");
 		escapeDistance.getAccessibleContext().setAccessibleDescription("Change the escape distance for the fractal");
 		escapeDistance.addActionListener((e) -> {
 			boolean wrong = true;
 			while (wrong) {
 				wrong = false;
-				String s = JOptionPane.showInputDialog("Enter a new escape distance ( > 0 )\n(default: 255)"); // pop up menu
+				String s = JOptionPane.showInputDialog(
+						"Enter a new escape distance ( > 0 )\n(current: " + _current.getEscapeDistance() + ")"); // pop
+																													// up
+																													// menu
 				try {
 					double d = Double.parseDouble(s); // convert to double
 					if (d > 0) {
@@ -256,39 +312,51 @@ public class FractalViewer extends JFrame {
 					}
 				} catch (NumberFormatException e1) { // not number
 					wrong = true; // re-open menu
-				} catch (NullPointerException e2) {} // exit or cancel
+				} catch (NullPointerException e2) {
+				} // exit or cancel
 			}
 		});
 		menu.add(escapeDistance); // add escape distance item
-		
+
 		JMenuItem maxEscapeTime = new JMenuItem("Change Max Escape Time");
 		maxEscapeTime.getAccessibleContext().setAccessibleDescription("Change the max escape time for the fractal");
 		maxEscapeTime.addActionListener((e) -> {
 			boolean wrong = true;
 			while (wrong) {
 				wrong = false;
-				String s = JOptionPane.showInputDialog("Enter a new max escape time ( > 0 )\n(default: 255)"); // pop up menu
+				String s = JOptionPane.showInputDialog(
+						"Enter a new max escape time ( > 0 )\n(current: " + _current.getMaxEscapes() + ")"); // pop
+																												// up
+																												// menu
 				try {
-					double d = Double.parseDouble(s); // convert to double
+					int d = Integer.parseInt(s); // convert to double
 					if (d > 0) {
-						changeMET(d); // if double is > 0, change max escape time
+						changeMET(d); // if double is > 0, change max escape
+										// time
 					} else {
 						wrong = true; // re-open menu
 					}
 				} catch (NumberFormatException e1) { // not number
-					wrong = true; // re-open menu
-				} catch (NullPointerException e2) {} // exit or cancel
+					if (e1.getMessage().trim().isEmpty() || e1.getMessage() != "null") // not
+																						// exit
+																						// or
+																						// cancel
+						wrong = true; // re-open menu
+				} catch (NullPointerException e2) {
+				} // exit or cancel
 			}
 		});
 		menu.add(maxEscapeTime); // add max escape time item
-		
-		JMenuItem item = new JMenuItem("Change Color Density"); // Change number of colors
+
+		JMenuItem item = new JMenuItem("Change Color Density"); // Change number
+																// of colors
 		item.getAccessibleContext().setAccessibleDescription("Change the number of colors in the fractal");
 		item.addActionListener((e) -> {
-			boolean wrong = true; 
+			boolean wrong = true;
 			while (wrong) {
 				wrong = false;
-				String s = JOptionPane.showInputDialog("Enter a new color density ( > 0 )\n(current: " + _colors + ")"); // pop up
+				String s = JOptionPane.showInputDialog("Enter a new color density ( > 0 )\n(current: " + _colors + ")"); // pop
+																															// up
 				try {
 					int d = Integer.parseInt(s); // convert to integer
 					if (d > 0) {
@@ -297,19 +365,21 @@ public class FractalViewer extends JFrame {
 						wrong = true; // re-open pop-up
 					}
 				} catch (NumberFormatException e1) {
-					if (e1.getMessage().trim().isEmpty() || e1.getMessage() != "null") // not exit or cancel
+					if (e1.getMessage().trim().isEmpty() || e1.getMessage() != "null") // not
+																						// exit
+																						// or
+																						// cancel
 						wrong = true; // re-open
 				} catch (NullPointerException e2) {
 				}
 			}
 		});
 		menu.add(item); // add item
-		
-		item = new JMenuItem("Reset Zoom"); // Change number of colors
-		item.getAccessibleContext().setAccessibleDescription("back to normal");
+
+		item = new JMenuItem("Reset"); // Change number of colors
+		item.getAccessibleContext().setAccessibleDescription("basically restarts the program");
 		item.addActionListener((e) -> {
-			_current.reset();
-			_fractalPanel.updateImage(_current.getPoints());
+			Driver.reset();
 		});
 		menu.add(item); // add item
 		_menuBar.add(menu); // add menu
@@ -317,8 +387,11 @@ public class FractalViewer extends JFrame {
 	}
 
 	/**
+	 * 
 	 * Change escape distance
-	 * @param d new escape distance
+	 * 
+	 * @param d
+	 *            new escape distance
 	 */
 	private void changeED(double d) {
 		_current.setEscapeDistance(d);
@@ -327,19 +400,23 @@ public class FractalViewer extends JFrame {
 
 	/**
 	 * Change max escape time
-	 * @param d new escape distance
+	 * 
+	 * @param d
+	 *            new escape distance
 	 */
-	private void changeMET(double d) {
-		
+	private void changeMET(int d) {
+
 		// STILL CHANGES ESCAPE DISTANCE
 		// UNSURE OF HOW TO CHANGE MAX EXCAPE TIME
-		_current.setEscapeDistance(d);
+		_current.setMax(d);
 		_fractalPanel.updateImage(_current.getPoints());
 	}
-	
+
 	/**
 	 * Change number of colors
-	 * @param d new number of colors
+	 * 
+	 * @param d
+	 *            new number of colors
 	 */
 	private void changeColorDensity(int d) {
 		_colors = d;
@@ -349,7 +426,9 @@ public class FractalViewer extends JFrame {
 
 	/**
 	 * Change displayed fractal
-	 * @param f Fractal reference
+	 * 
+	 * @param f
+	 *            Fractal reference
 	 */
 	private void changeFractal(Fractal f) {
 		_current = f;
@@ -369,12 +448,10 @@ public class FractalViewer extends JFrame {
 	}
 
 	/**
-	 * Chance color scheme
-	 * 1 -> Blue
-	 * 2 -> Gray
-	 * 3 -> Rainbow
-	 * 4 -> Green
-	 * @param num number of color scheme
+	 * Chance color scheme 1 -> Blue 2 -> Gray 3 -> Rainbow 4 -> Green
+	 * 
+	 * @param num
+	 *            number of color scheme
 	 */
 	private void changeColor(int num) {
 		switch (num) {
@@ -394,6 +471,33 @@ public class FractalViewer extends JFrame {
 		_fractalPanel.updateImage(_current.getPoints());
 		_colorNumber = num;
 	}
+
+	private void zoomOut() {
+		_current.reset();
+		// 65
+		_fractalPanel.updateImage(_current.getPoints());
+		if (_current.fullView())
+			zoomIn.setEnabled(true);
+	}
+
+	private void zoomIn(){
+		double x = -0.7466286958869421;
+		double y = 0.0951991875203021;
+		zoomIn(x, y);
+	}
 	
-	
+	private void zoomIn(double x, double y) {
+		zoomIn.setText("Stop");
+		zoom = true;
+		int x1 = 0;
+		while(zoom) {
+			try {
+				SwingUtilities.invokeAndWait(() -> {
+					_fractalPanel.updateImage(_current.getNextZoomIn(x, y));
+				});
+			} catch (InvocationTargetException | InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+	}
 }
