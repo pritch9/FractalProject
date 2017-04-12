@@ -1,8 +1,8 @@
 UPDATE:
 
-How to update the escape distance of the fractal.
+How to update the escape distance and maximum escape time of the fractal.
 
-
+To change escape distance:
 On the JMenuBar, there is a JMenu labeled Options. Clicking that will allow the user to 
 select the Change Escape Distance JMenuItem.
 
@@ -17,10 +17,28 @@ The user can also click the Cancel button to not change the escape distance.
 In cases where the escape distance entered by the user are not valid, the program will 
 reject that input and ask the user to re-enter the escape distance.
 
-To change the escape distance, we take the input given by the user, try to parse it as a double, then perform checks for valid value.
-A valid value is a double greater than 0.  We take the double value and pass it to changeED(value) which changes the distance for the current fractal
-and updates the fractalpanel with newly generated escape distance values.
+To change the escape distance, we take the input given by the user, try to parse it as a 
+double, then perform checks for valid value. A valid value is a double greater than 0.  
+We take the double value and pass it to changeED(value) which changes the distance for the 
+current fractal and updates the fractalpanel with newly generated escape distance values.
 
-To change the maximum escape time and color density, we take the input given by the user, try to parse it as a integer, then perform checks for valid value.
-A valid value is a double greater than 0 and less than 255.  We take the int value and pass it to changeMET(value) and changeColorDensity(value) which updates the values for the current fractal
-and updates the fractalpanel with newly generated information.
+To change maximum escape time:
+On the JMenuBar, there is a JMenu labeled Options. Clicking that will allow the user to 
+select the Change Max Escape Time JMenuItem.
+
+Clicking on the Change Max Escape Time JMenuItem will cause a JOptionPane to pop up and 
+prompt the user to enter a new maximum escape time.
+
+On the JOptionPane, the user can type in a numerical value and click the OK button 
+to update the maximum escape time.
+
+The user can also click the Cancel button to not change the maximum escape time.
+
+In cases where the maximum escape time entered by the user are not valid, the program will 
+reject that input and ask the user to re-enter the maximum escape time.
+
+To change the maximum escape time and color density, we take the input given by the user, 
+try to parse it as a integer, then perform checks for valid value. A valid value is a 
+double greater than 0 and less than 255. We take the int value and pass it to 
+changeMET(value) and changeColorDensity(value) which updates the values for the current 
+fractal and updates the fractalpanel with newly generated information.
