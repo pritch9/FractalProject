@@ -61,6 +61,15 @@ public class BurningShipTest {
 			}
 		}
 	}
+
+	@Test
+	public void testMaxEscapesWithNewMaxEscapeTime(){
+		_burn.setEscapeDistance(2.0);
+		_burn.setMax(135);
+		int passes = _burn.getEscapeTime(-1.7443359374999874, -0.017451171875000338);
+		assertEquals(135, passes);
+		_burn.setMax(255);
+	}
 	
 	@Test
 	public void testCorrectArrayLength(){

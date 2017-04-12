@@ -1,0 +1,2 @@
+When the user hits the reset button, either in the "Zoom Board" or in the options menu, the fractal will regenerate with the default values.
+The default values are stored upon original instantiation and are accessed with the reset() function in the Fractal class.

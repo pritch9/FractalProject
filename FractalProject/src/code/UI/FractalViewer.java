@@ -25,7 +25,6 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
-import javax.swing.Timer;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
@@ -79,9 +78,7 @@ public class FractalViewer extends JFrame {
 	private JButton reset;
 	private JLabel message;
 	private volatile boolean zoom = false;
-	private Timer recenter;
-	private int zooms = 0;
-
+	
 	/**
 	 * Constructor setting up FractalViewer
 	 */
@@ -147,7 +144,6 @@ public class FractalViewer extends JFrame {
 		reset = new JButton("Reset");
 		reset.addActionListener((e) -> {
 			zoom = false;
-			zooms = 0;
 			_current.reset();
 			_fractalPanel.updateImage(_current.getPoints());
 		});
@@ -161,16 +157,6 @@ public class FractalViewer extends JFrame {
 
 		b.add(top, BorderLayout.NORTH);
 		this.add(b, BorderLayout.SOUTH);
-		
-		recenter = new Timer(3, (e)->{
-			int times = 15;
-			
-			double xDist = Math.abs(_current.getX() - _current.getCenterX())/times*((_current.getX() > _current.getCenterX()) ? -1 : 1);
-			double yDist = Math.abs(_current.getY() - _current.getCenterY())/times*((_current.getY() > _current.getCenterY()) ? -1 : 1);
-			
-			_current.shift(xDist, yDist);
-		});
-		recenter.setDelay(10);
 	}
 
 	/**
@@ -367,12 +353,12 @@ public class FractalViewer extends JFrame {
 			while (wrong) {
 				wrong = false;
 				String s = JOptionPane.showInputDialog(
-						"Enter a new max escape time ( > 0 )\n(current: " + _current.getMaxEscapes() + ")"); // pop
+						"Enter a new max escape time (0, 255]\n(current: " + _current.getMaxEscapes() + ")"); // pop
 																												// up
 																												// menu
 				try {
 					int d = Integer.parseInt(s); // convert to double
-					if (d > 0) {
+					if (d > 0 && d <= 255) {
 						changeMET(d); // if double is > 0, change max escape
 										// time
 					} else {
@@ -397,11 +383,11 @@ public class FractalViewer extends JFrame {
 			boolean wrong = true;
 			while (wrong) {
 				wrong = false;
-				String s = JOptionPane.showInputDialog("Enter a new color density ( > 0 )\n(current: " + _colors + ")"); // pop
+				String s = JOptionPane.showInputDialog("Enter a new color density (0,255]\n(current: " + _colors + ")"); // pop
 																															// up
 				try {
 					int d = Integer.parseInt(s); // convert to integer
-					if (d > 0) {
+					if (d > 0 && d < 255) {
 						changeColorDensity(d); // if > 0, change color density
 					} else {
 						wrong = true; // re-open pop-up
@@ -516,6 +502,11 @@ public class FractalViewer extends JFrame {
 		_colorNumber = num;
 	}
 
+	/**
+	 * Starts the zoom out animation with a given coordinate point
+	 * @param x x value
+	 * @param y y value
+	 */
 	private void zoomOut(double x, double y) {
 		zoom = true;
 		zoomIn.setEnabled(false);
@@ -526,21 +517,20 @@ public class FractalViewer extends JFrame {
 				SwingUtilities.invokeAndWait(() -> {
 					_fractalPanel.updateImage(_current.getNextZoomOut());
 				});
-				zooms--;
-				int num = _colors + (zooms);
-				_current.setMax(num);
-				changeColor(num);
-				System.out.println(_colors);
 			} catch (InvocationTargetException | InterruptedException e) {
 				e.printStackTrace();
 			}
 		} while (zoom && !_current.fullView());
 		zoom = false;
-		zooms = 0;
 		_fractalPanel.updateImage(_current.getPoints());
 		zoomIn.setEnabled(true);
 	}
-	
+
+	/**
+	 * Starts the zoom in animation with a given coordinate point
+	 * @param x x value
+	 * @param y y value
+	 */
 	private void zoomIn(double x, double y) {
 		zoomIn.setText("Stop");
 		zoom = true;
@@ -549,11 +539,6 @@ public class FractalViewer extends JFrame {
 				SwingUtilities.invokeAndWait(() -> {
 					_fractalPanel.updateImage(_current.getNextZoomIn(x, y));
 				});
-				zooms++;
-				int num = _colors + (zooms);
-				_current.setMax(num);
-				changeColor(num);
-				System.out.println(_colors+zooms + " " + _current.getMaxEscapes());
 			} catch (InvocationTargetException | InterruptedException e) {
 				e.printStackTrace();
 			}

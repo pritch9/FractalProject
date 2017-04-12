@@ -1,0 +1,39 @@
+[X] Each team's submission includes a file named run.txt which tells the TAs how to run your program to verify you have a working GUI [1 point]
+
+[X] Each team defines a GUI application that includes a FractalPanel instance to see the fractals [2 points]
+
+[X] Each team's program includes the required menu bar, menus, and menu items [2 points]
+
+[X] Each team's program correctly handles when the user selects one of the menu items [5 points]
+
+[X] Each team's program correctly generates all four of the fractals and creates all four of their color schemes [5 points]
+
+[X] Each team's submission includes a file named reset.txt which tells the TAs how to reset the zoom so that the fractal is redrawn using the original coordinate range [1 point]
+
+[X] Each team's submission includes a GUI-based approach to reset the zoom in a fractal [2 points]
+
+[X] Once zoom reset is selected, the fractal is redrawn using the original coordinate range [2 points]
+
+[X] Each team's submission includes a file named update.txt which tells the TAs how to update the escape distance and also tells the TA how to update the maximum escape time [1 point]
+
+[X] Each team's submission includes a GUI-based approach to update the escape distance and to update the maximum escape time [2 points]
+
+[X] Each team's program accepts valid escape distances and maximum escape times and recalculates and redraws the fractal when the user specifies a new value [4 points]
+
+[X] Once a new escape distance is entered and once a new maximum escape time is entered, the program continues to use that value when calculating fractals [2 points]
+
+[X] Each team's submission allows users to select a portion of a fractal to zoom in on [4 points]
+
+[X] While a user is dragging the mouse to select the region of the fractal on which to zoom in, the program provides some visual feedback for their actions [5 points]
+
+[X] Once a region is selected, the program recalculates and redisplays a 512-by-512 fractal only showing the selected coordinates [10 points]
+
+[X] Each team must write JUnit tests showing that their project can: [50 points]
+      - JUnit tests from phases #1 and 2 have been updated (where this is needed) so they continue to pass [26 points]
+        - When the maximum escape time is set to 135 and the escape distance is set to 2, calculates the escape time for a coordinate whose distance from the origin never exceeds the escape distance [4 * 6 points = 24 points]
+        - Mandelbrot Set: (0.3207031250000001, -0.07109374999999386)
+        - Julia Set: (1.0492187499999897, -0.234375)
+        - Burning Ship Set: (-1.7443359374999874, -0.017451171875000338)
+        - Multibrot Set: (0.5859375, 0.24375000000000108)
+    
+[X] All classes, methods, and instance variables are commented using Javadoc [2 points]

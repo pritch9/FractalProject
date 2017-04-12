@@ -57,6 +57,16 @@ public class JuliaTest {
 		_julia.setEscapeDistance(2.0);
 	}
 	
+
+	@Test
+	public void testMaxEscapesWithNewMaxEscapeTime(){
+		_julia.setEscapeDistance(2.0);
+		_julia.setMax(135);
+		int passes = _julia.getEscapeTime(1.0492187499999897, -0.234375);
+		assertEquals(135, passes);
+		_julia.setMax(255);
+	}
+	
 	@Test
 	public void testCorrectArrayLength(){
 		assertEquals(512, _julia.getPoints().length);

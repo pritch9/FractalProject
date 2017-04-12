@@ -21,5 +21,13 @@ the respective fractal.
 Clicking on Colors will allow the user to select from the colors of Blue, Gray, Rainbow, or 
 Green. The display will then update to show the fractal in the designated color.
 
-Clicking on Options will allow the user to change Escape Distance. See update.txt for more
+Clicking on Options will allow the user to change Escape Distance, Escape Time, and the number of colors displayed. See update.txt for more
 details.
+
+For Zooming:  When a user clicks and drags on the fractal, a red box will be drawn as the user moves their mouse.  
+When the user releases the mouse button, the fractal will regenerate with the bounds set by the square box.
+
+On the bottom of the GUI, is a zoom menu, including 3 buttons:
+	- "Zoom Out": which zooms out from the zoomed in point.
+	- "Zoom In": which zooms in to either the center of the view, or zooms into a pre-selected point.
+	- "Reset": which stops all animation and returns to the full view of the fractal.

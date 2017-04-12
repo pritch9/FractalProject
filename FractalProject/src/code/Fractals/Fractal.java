@@ -20,7 +20,7 @@ public abstract class Fractal {
 	 * Dimensions of points
 	 */
 	private int _rows, _cols;
-	
+
 	public double coolX, coolY;
 
 	/**
@@ -37,13 +37,13 @@ public abstract class Fractal {
 	 * Bounds
 	 */
 	private double _upperX, _lowerX, _upperY, _lowerY;
-	
-	private double x, y;
-	
-	private double centerX, centerY;
 
-	private double _upperXO, _lowerXO, _upperYO, _lowerYO;
-	
+	private double x, y;
+
+	private boolean DEFAULTS_SET = false;
+
+	private double ORIGINAL_LOWER_X, ORIGINAL_LOWER_Y, ORIGINAL_UPPER_X, ORIGINAL_UPPER_Y;
+
 	/**
 	 * Escape distance for calculating the Fractal
 	 */
@@ -53,6 +53,8 @@ public abstract class Fractal {
 	 * Initialize with defaults: Max Passes: 255 Bounds: X: [-1.8,-1.7] Y:
 	 * [-0.08,0.025]
 	 * 
+	 * @param name
+	 *            The name of the fractal set (E.g. "Mandelbrot")
 	 * @param lowerX
 	 *            lower X Bound
 	 * @param upperX
@@ -69,6 +71,8 @@ public abstract class Fractal {
 	/**
 	 * Set rows and columns upon construction
 	 * 
+	 * @param name
+	 *            The name of the fractal set (E.g. "Mandelbrot")
 	 * @param rows
 	 *            amount of rows in points array
 	 * @param cols
@@ -141,20 +145,19 @@ public abstract class Fractal {
 		_upperY = upperY;
 		_lowerY = lowerY;
 
-		if (_upperXO == 0) {
-			_upperXO = _upperX;
-			_lowerXO = _lowerX;
-			_upperYO = _upperY;
-			_lowerYO = _lowerY;
-			centerX = _upperXO - (_upperXO-_lowerXO)/2;
-			centerY = _upperYO - (_upperYO-_lowerYO)/2;
+		if (!DEFAULTS_SET) {
+			this.ORIGINAL_UPPER_X = _upperX;
+			this.ORIGINAL_LOWER_X = _lowerX;
+			this.ORIGINAL_UPPER_Y = _upperY;
+			this.ORIGINAL_LOWER_X = _lowerY;
+			DEFAULTS_SET = true;
 		}
 	}
 
 	/**
 	 * Returns the 2-D array of points
 	 * 
-	 * @return int[][] points
+	 * @return points the 2D-array of escape times
 	 */
 	public int[][] getPoints() {
 		return _points;
@@ -164,19 +167,22 @@ public abstract class Fractal {
 	 * Call to calculate points.
 	 */
 	private void calculatePoints() {
-		this.x = _upperX - ((_upperX-_lowerX)/2);
-		this.y = _upperY - ((_upperY-_lowerY)/2);
+		this.x = _upperX - (getWidth() / 2);
+		this.y = _upperY - (getHeight() / 2);
+
 		_points = new int[_cols][_rows]; // deine the return array// [X][Y]
-		
+
 		// The or loops iterate through the entire 2D array table
-		int threads = 128;
+		int threads = Runtime.getRuntime().availableProcessors();
+
 		ExecutorService e = Executors.newFixedThreadPool(threads);
 		List<PointRunner> list = new ArrayList<PointRunner>();
-		for(int x = 0; x < threads; x++){
+		for (int x = 0; x < threads; x++) {
 			PointRunner uno = new PointRunner(this, _cols, threads, x);
 			e.execute(uno);
 			list.add(uno);
 		}
+
 		e.shutdown();
 		try {
 			e.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
@@ -184,9 +190,9 @@ public abstract class Fractal {
 			e2.printStackTrace();
 		}
 		int[][] one = list.get(0).getPoints(), two;
-		for(int x = 1; x < list.size(); x++){
+		for (int x = 1; x < list.size(); x++) {
 			two = list.get(x).getPoints();
-			one = this.append(one, two); 
+			one = this.append(one, two);
 		}
 		_points = one;
 	}
@@ -195,8 +201,10 @@ public abstract class Fractal {
 	 * Custom calculation or a single fractal point
 	 * 
 	 * @param xCalc
+	 *            double x value of column
 	 * @param yCalc
-	 * @return number of passes
+	 *            double y value of row
+	 * @return the escape time of a point (xCalc, yCalc)
 	 */
 	public abstract int calculate(double xCalc, double yCalc);
 
@@ -222,6 +230,7 @@ public abstract class Fractal {
 	 * Sets the escape distance
 	 * 
 	 * @param escapeDistance
+	 *            the new escape distance (0, infinity)
 	 */
 	public void setEscapeDistance(double escapeDistance) {
 		_escapeDistance = escapeDistance;
@@ -232,6 +241,7 @@ public abstract class Fractal {
 	 * Returns the X coordinate or a given column
 	 * 
 	 * @param col
+	 *            column number
 	 * @return Cartesian X coordinate
 	 */
 	public double getX(int col) {
@@ -242,6 +252,7 @@ public abstract class Fractal {
 	 * Returns the Y coordinate or a given rows
 	 * 
 	 * @param row
+	 *            row number
 	 * @return Cartesian Y coordinate
 	 */
 	public double getY(int row) {
@@ -252,8 +263,8 @@ public abstract class Fractal {
 	 * Returns the column or a given Cartesian x coordinate
 	 * 
 	 * @param x
-	 *            coordinate
-	 * @return column i x is contained by the bounds
+	 *            X coordinate
+	 * @return column if x is contained by the bounds
 	 */
 	public int getCol(double x) {
 		if (x < _lowerX || x > _upperX) {
@@ -267,8 +278,8 @@ public abstract class Fractal {
 	 * Returns the row or a given Cartesian y coordinate
 	 * 
 	 * @param y
-	 *            coordinate
-	 * @return column i y is contained by the bounds (-1 i not)
+	 *            Y coordinate
+	 * @return column if y is contained by the bounds (-1 i not)
 	 */
 	public int getRow(double y) {
 		if (y < _lowerY || y > _upperY) {
@@ -281,24 +292,52 @@ public abstract class Fractal {
 	/**
 	 * Gets the name of the set
 	 * 
-	 * @return name example: "Mandelbrot"
+	 * @return the name of the set (E.g. "Mandelbrot")
 	 */
 	public String getName() {
 		return this._name;
 	}
 
+	/**
+	 * Getter of the number of rows
+	 * 
+	 * @return the number of rows of the fractal
+	 */
 	public int getNumRows() {
 		return this._rows;
 	}
 
+	/**
+	 * Getter of the number of columns
+	 * 
+	 * @return the number of columns of the fractal
+	 */
 	public int getNumCols() {
 		return this._cols;
 	}
 
+	/**
+	 * Getter of the escape time of a specific point in the set
+	 * 
+	 * @param col
+	 *            column number
+	 * @param row
+	 *            row number
+	 * @return the escape time
+	 */
 	public int getEscapeTime(int col, int row) {
 		return _points[col][row];
 	}
 
+	/**
+	 * Getter of the escape time of a specific point in the set
+	 * 
+	 * @param x
+	 *            The Cartesian X coordinate
+	 * @param y
+	 *            The Cartesian Y coordinate
+	 * @return the escape time
+	 */
 	public int getEscapeTime(double x, double y) {
 		return getEscapeTime(getCol(x), getRow(y));
 	}
@@ -308,27 +347,169 @@ public abstract class Fractal {
 
 		this.calculatePoints();
 	}
-	
-	public double getX(){
+
+	/**
+	 * Getter of the current center X coordinate
+	 * 
+	 * @return the current center X coordinate
+	 */
+	public double getX() {
 		return this.x;
 	}
-	
-	public double getY(){
+
+	/**
+	 * Getter of the current center Y coordinate
+	 * 
+	 * @return the current center Y coordinate
+	 */
+	public double getY() {
 		return this.y;
 	}
-	
-	
-	public double getWidth(){
-		return _upperX-_lowerX;
-	}
-	
-	public double getHeight(){
-		return _upperY-_lowerY;
+
+	/**
+	 * Getter of the current width
+	 * 
+	 * @return the current width of the fractal bounds
+	 */
+	public double getWidth() {
+		return _upperX - _lowerX;
 	}
 
+	/**
+	 * Getter of the current height
+	 * 
+	 * @return the current height of the fractal bounds
+	 */
+	public double getHeight() {
+		return _upperY - _lowerY;
+	}
+
+	/**
+	 * Resets the fractal to it's former glory
+	 */
+	public void reset() {
+		this._lowerX = this.ORIGINAL_LOWER_X;
+		this._upperX = this.ORIGINAL_UPPER_X;
+		this._lowerY = this.ORIGINAL_LOWER_Y;
+		this._upperY = this.ORIGINAL_UPPER_Y;
+		this.calculatePoints();
+	}
+
+	/**
+	 * Tells whether or not the fractal is completely zoomed out
+	 * 
+	 * @return true if fractal is at original size
+	 */
+	public boolean fullView() {
+		return getWidth() >= getFullWidth() && getHeight() >= getFullHeight();
+	}
+
+	/**
+	 * Getter of the original width of the fractal
+	 * 
+	 * @return the original width of the fractal
+	 */
+	public double getFullWidth() {
+		return this.ORIGINAL_UPPER_X - this.ORIGINAL_LOWER_X;
+	}
+
+	/**
+	 * Getter of the original height of the fractal
+	 * 
+	 * @return the original height of the fractal
+	 */
+	public double getFullHeight() {
+		return this.ORIGINAL_UPPER_Y - this.ORIGINAL_LOWER_Y;
+	}
+
+	/**
+	 * @author http://stackoverflow.com/users/100565/mebigfatguy
+	 * @param a
+	 *            array #1
+	 * @param b
+	 *            array #2
+	 * @return array a appended to array b
+	 */
+	public int[][] append(int[][] a, int[][] b) {
+		int[][] result = new int[a.length + b.length][];
+		System.arraycopy(a, 0, result, 0, a.length);
+		System.arraycopy(b, 0, result, a.length, b.length);
+		return result;
+	}
+
+	/**
+	 * Calculates the 2D-Array of Escape Times for the next zoomed out portion
+	 * of the fractal animation
+	 * 
+	 * @return the 2D-Array of escape times
+	 */
+	public int[][] getNextZoomOut() {
+		double w = getWidth();
+		double h = getHeight();
+
+		x = _upperX - (w / 2);
+		y = _upperY - (h / 2);
+
+		w += w * .1;
+		h += h * .1;
+
+		if (fullView()) {
+			w = getFullWidth();
+			h = getFullHeight();
+		}
+
+		_lowerX = x - w / 2;
+		_upperX = x + w / 2;
+		_lowerY = y - h / 2;
+		_upperY = y + h / 2;
+
+		/*
+		 * In order to recenter while zooming out, the center of the zoom must
+		 * be shifted. This can be done more efficiently if we thought about it
+		 * but right now it works.
+		 * 
+		 */
+		if (this._upperX >= this.ORIGINAL_UPPER_X) {
+			double change = this._upperX - this.ORIGINAL_UPPER_X;
+			this._lowerX -= change;
+			this._upperX = this.ORIGINAL_UPPER_X;
+		}
+
+		if (this._lowerX <= this.ORIGINAL_LOWER_X) {
+			double change = this.ORIGINAL_LOWER_X - this._lowerX;
+			this._upperX += change;
+			this._lowerX = this.ORIGINAL_LOWER_X;
+		}
+
+		if (this._upperY >= this.ORIGINAL_UPPER_Y) {
+			double change = this._upperY - this.ORIGINAL_UPPER_Y;
+			this._lowerY -= change;
+			this._upperY = this.ORIGINAL_UPPER_Y;
+		}
+
+		if (this._lowerY <= this.ORIGINAL_LOWER_Y) {
+			double change = this.ORIGINAL_LOWER_Y - this._lowerY;
+			this._upperY += change;
+			this._lowerY = this.ORIGINAL_LOWER_Y;
+		}
+
+		this.calculatePoints();
+		return this._points;
+	}
+
+	/**
+	 * Calculates the 2D-Array of Escape Times for the next zoomed in portion of
+	 * the fractal animation
+	 * 
+	 * @param x
+	 *            center X coordinate
+	 * @param y
+	 *            center X coordinate
+	 * @return the 2D-Array of escape times
+	 */
 	public int[][] getNextZoomIn(double x, double y) {
-		double w = _upperX - _lowerX;
-		double h = _upperY - _lowerY;
+		double w = getWidth();
+		double h = getHeight();
 
 		w -= w * .05;
 		h -= h * .05;
@@ -337,95 +518,11 @@ public abstract class Fractal {
 		_upperX = x + w / 2;
 		_lowerY = y - h / 2;
 		_upperY = y + h / 2;
+
 		this.x = x;
 		this.y = y;
 		this.calculatePoints();
 		return this._points;
-	}
-
-	public void reset() {
-		this._lowerX = _lowerXO;
-		this._upperX = _upperXO;
-		this._lowerY = _lowerYO;
-		this._upperY = _upperYO;
-		this.calculatePoints();
-	}
-
-
-	public boolean fullView() {
-		return getWidth() >= (_upperXO - _lowerXO) && getHeight() >= (_upperYO - _lowerYO);
-	}
-	
-	/**
-	 * @author http://stackoverflow.com/users/100565/mebigfatguy
-	 * @param a
-	 * @param b
-	 * @return
-	 */
-	public int[][] append(int[][] a, int[][] b) {
-        int[][] result = new int[a.length + b.length][];
-        System.arraycopy(a, 0, result, 0, a.length);
-        System.arraycopy(b, 0, result, a.length, b.length);
-        return result;
-    }
-
-	public int[][] getNextZoomOut() {
-		double w = _upperX - _lowerX;
-		double h = _upperY - _lowerY;
-		
-		x = _upperX - (w/2);
-		y = _upperY - (h/2);
-		
-		w += w * .1;
-		h += h * .1;
-		
-		if(w >= (_upperXO - _lowerXO)) w = (_upperXO - _lowerXO);
-		if(h >= (_upperYO - _lowerYO)) h = (_upperYO - _lowerYO);
-		
-		_lowerX = x - w / 2;
-		_upperX = x + w / 2;
-		_lowerY = y - h / 2;
-		_upperY = y + h / 2;
-		
-		if(_upperX >= _upperXO){
-			double change = _upperX-_upperXO;
-			_lowerX -= change;
-			_upperX = _upperXO;
-		}
-		
-		if(_lowerX <= _lowerXO){
-			double change = _lowerXO - _lowerX;
-			_upperX += change;
-			_lowerX = _lowerXO;
-		}
-		
-		if(_upperY >= _upperYO){
-			double change = _upperY-_upperYO;
-			_lowerY -= change;
-			_upperY = _upperYO;
-		}
-		
-		if(_lowerY <= _lowerYO){
-			double change = _lowerYO - _lowerY;
-			_upperY += change;
-			_lowerY = _lowerYO;
-		}
-		
-		this.calculatePoints();
-		return this._points;
-	}
-
-	public double getCenterX(){
-		return this.centerX;
-	}
-	
-	public double getCenterY() {
-		return this.centerY;
-	}
-
-	public void shift(double xDist, double yDist) {
-		this.x += xDist;
-		this.y += yDist;
 	}
 
 }

@@ -55,6 +55,15 @@ public class MultibrotTest {
 		assertEquals(10, passes);
 		_multi.setEscapeDistance(2.0);
 	}
+
+	@Test
+	public void testMaxEscapesWithNewMaxEscapeTime(){
+		_multi.setEscapeDistance(2.0);
+		_multi.setMax(135);
+		int passes = _multi.getEscapeTime(0.5859375, 0.24375000000000108);
+		assertEquals(135, passes);
+		_multi.setMax(255);
+	}
 	
 	@Test
 	public void testCorrectArrayLength(){
