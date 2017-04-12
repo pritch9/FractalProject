@@ -1,6 +1,8 @@
 package code.Fractals;
 
 import java.awt.Point;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -37,9 +39,11 @@ public abstract class Fractal {
 	private double _upperX, _lowerX, _upperY, _lowerY;
 	
 	private double x, y;
+	
+	private double centerX, centerY;
 
 	private double _upperXO, _lowerXO, _upperYO, _lowerYO;
-
+	
 	/**
 	 * Escape distance for calculating the Fractal
 	 */
@@ -142,6 +146,8 @@ public abstract class Fractal {
 			_lowerXO = _lowerX;
 			_upperYO = _upperY;
 			_lowerYO = _lowerY;
+			centerX = _upperXO - (_upperXO-_lowerXO)/2;
+			centerY = _upperYO - (_upperYO-_lowerYO)/2;
 		}
 	}
 
@@ -163,36 +169,26 @@ public abstract class Fractal {
 		_points = new int[_cols][_rows]; // deine the return array// [X][Y]
 		
 		// The or loops iterate through the entire 2D array table
-		ExecutorService e = Executors.newFixedThreadPool(8);
-		PointRunner uno = new PointRunner(this, _cols, 8, 0);
-		PointRunner dos = new PointRunner(this, _cols, 8, 1);
-		PointRunner tres = new PointRunner(this, _cols, 8, 2);
-		PointRunner cuatro = new PointRunner(this, _cols, 8, 3);
-		PointRunner cinco = new PointRunner(this, _cols, 8, 4);
-		PointRunner seis = new PointRunner(this, _cols, 8, 5);
-		PointRunner siete = new PointRunner(this, _cols, 8, 6);
-		PointRunner ocho = new PointRunner(this, _cols, 8, 7);
-		e.execute(uno);
-		e.execute(dos);
-		e.execute(tres);
-		e.execute(cuatro);
-		e.execute(cinco);
-		e.execute(seis);
-		e.execute(siete);
-		e.execute(ocho);
+		int threads = 128;
+		ExecutorService e = Executors.newFixedThreadPool(threads);
+		List<PointRunner> list = new ArrayList<PointRunner>();
+		for(int x = 0; x < threads; x++){
+			PointRunner uno = new PointRunner(this, _cols, threads, x);
+			e.execute(uno);
+			list.add(uno);
+		}
 		e.shutdown();
 		try {
 			e.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
 		} catch (InterruptedException e2) {
 			e2.printStackTrace();
 		}
-		int[][] k = this.append(uno.getPoints(), dos.getPoints());
-		int[][] l = this.append(tres.getPoints(), cuatro.getPoints());
-		int[][] m = this.append(cinco.getPoints(), seis.getPoints());
-		int[][] n = this.append(siete.getPoints(), ocho.getPoints());
-		int[][] o = this.append(k, l);
-		int[][] p = this.append(m, n);
-		_points = this.append(o,p);
+		int[][] one = list.get(0).getPoints(), two;
+		for(int x = 1; x < list.size(); x++){
+			two = list.get(x).getPoints();
+			one = this.append(one, two); 
+		}
+		_points = one;
 	}
 
 	/**
@@ -320,6 +316,15 @@ public abstract class Fractal {
 	public double getY(){
 		return this.y;
 	}
+	
+	
+	public double getWidth(){
+		return _upperX-_lowerX;
+	}
+	
+	public double getHeight(){
+		return _upperY-_lowerY;
+	}
 
 	public int[][] getNextZoomIn(double x, double y) {
 		double w = _upperX - _lowerX;
@@ -332,11 +337,9 @@ public abstract class Fractal {
 		_upperX = x + w / 2;
 		_lowerY = y - h / 2;
 		_upperY = y + h / 2;
-		long startTime = System.nanoTime();
+		this.x = x;
+		this.y = y;
 		this.calculatePoints();
-		long end = System.nanoTime();
-		
-		System.out.println((end-startTime)/1000000 + "ms");
 		return this._points;
 	}
 
@@ -350,7 +353,7 @@ public abstract class Fractal {
 
 
 	public boolean fullView() {
-		return _lowerX == _lowerXO && _upperX == _upperXO && _lowerY == _lowerYO && _upperY == _upperYO;
+		return getWidth() >= (_upperXO - _lowerXO) && getHeight() >= (_upperYO - _lowerYO);
 	}
 	
 	/**
@@ -365,5 +368,64 @@ public abstract class Fractal {
         System.arraycopy(b, 0, result, a.length, b.length);
         return result;
     }
+
+	public int[][] getNextZoomOut() {
+		double w = _upperX - _lowerX;
+		double h = _upperY - _lowerY;
+		
+		x = _upperX - (w/2);
+		y = _upperY - (h/2);
+		
+		w += w * .1;
+		h += h * .1;
+		
+		if(w >= (_upperXO - _lowerXO)) w = (_upperXO - _lowerXO);
+		if(h >= (_upperYO - _lowerYO)) h = (_upperYO - _lowerYO);
+		
+		_lowerX = x - w / 2;
+		_upperX = x + w / 2;
+		_lowerY = y - h / 2;
+		_upperY = y + h / 2;
+		
+		if(_upperX >= _upperXO){
+			double change = _upperX-_upperXO;
+			_lowerX -= change;
+			_upperX = _upperXO;
+		}
+		
+		if(_lowerX <= _lowerXO){
+			double change = _lowerXO - _lowerX;
+			_upperX += change;
+			_lowerX = _lowerXO;
+		}
+		
+		if(_upperY >= _upperYO){
+			double change = _upperY-_upperYO;
+			_lowerY -= change;
+			_upperY = _upperYO;
+		}
+		
+		if(_lowerY <= _lowerYO){
+			double change = _lowerYO - _lowerY;
+			_upperY += change;
+			_lowerY = _lowerYO;
+		}
+		
+		this.calculatePoints();
+		return this._points;
+	}
+
+	public double getCenterX(){
+		return this.centerX;
+	}
+	
+	public double getCenterY() {
+		return this.centerY;
+	}
+
+	public void shift(double xDist, double yDist) {
+		this.x += xDist;
+		this.y += yDist;
+	}
 
 }

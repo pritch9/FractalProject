@@ -5,7 +5,6 @@ import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Graphics;
-import java.awt.Insets;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
@@ -26,9 +25,9 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
+import javax.swing.Timer;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
-import javax.swing.plaf.synth.SynthSplitPaneUI;
 
 import code.Fractals.BurningShip;
 import code.Fractals.Fractal;
@@ -42,8 +41,6 @@ public class FractalViewer extends JFrame {
 	 * 
 	 */
 	private static final long serialVersionUID = 5603717614547419262L;
-
-	private static FractalViewer _fractalViewer;
 
 	/**
 	 * Menubar
@@ -79,14 +76,16 @@ public class FractalViewer extends JFrame {
 
 	private JButton zoomIn;
 	private JButton zoomOut;
+	private JButton reset;
 	private JLabel message;
 	private volatile boolean zoom = false;
+	private Timer recenter;
+	private int zooms = 0;
 
 	/**
 	 * Constructor setting up FractalViewer
 	 */
 	public FractalViewer() {
-		_fractalViewer = this;
 		this.setResizable(false);
 		setupFractalPanel();
 		setupFractals();
@@ -104,40 +103,74 @@ public class FractalViewer extends JFrame {
 		z.setLayout(new FlowLayout());
 		zoomOut = new JButton("Zoom Out");
 		zoomOut.addActionListener((e) -> {
-			zoomOut();
-			zoomIn.setText("Zoom In");
+			if(!zoom){
+				this.zoomOut.setText("Stop");
+				new Thread(new Runnable() {
+					public void run() {
+						zoomOut(_current.getX(), _current.getY());
+						// zoomIn.setText("Zoom In");
+					}
+				}).start();
+			} else {
+				zoomOut.setText("Continue");
+				zoomIn.setEnabled(true);
+				zoom = false;
+			}
 		});
 
 		z.add(zoomOut);
 
 		zoomIn = new JButton("Zoom In");
 		zoomIn.addActionListener((e) -> {
-			if(!zoom){
+			if (!zoom) {
 				zoomOut.setEnabled(false);
-				new Thread(new Runnable(){
-					public void run(){
-						if(_current.fullView()) {
+				reset.setEnabled(false);
+				new Thread(new Runnable() {
+					public void run() {
+						if (_current.fullView()) {
 							zoomIn(_current.coolX, _current.coolY);
-						}
-						else zoomIn(_current.getX(), _current.getY());
+						} else
+							zoomIn(_current.getX(), _current.getY());
 					}
 				}).start();
 			} else {
 				zoomOut.setEnabled(true);
+				reset.setEnabled(true);
 				zoom = false;
 				zoomIn.setText("Continue");
 			}
 		});
 
 		z.add(zoomIn);
+		
+
+		reset = new JButton("Reset");
+		reset.addActionListener((e) -> {
+			zoom = false;
+			zooms = 0;
+			_current.reset();
+			_fractalPanel.updateImage(_current.getPoints());
+		});
+
+		z.add(reset);
 		b.add(z, BorderLayout.SOUTH);
 		JPanel top = new JPanel();
 		message = new JLabel("Zoom Board");
 		message.setFont(new Font("Times New Roman", Font.BOLD, 24));
 		top.add(message);
-		
+
 		b.add(top, BorderLayout.NORTH);
 		this.add(b, BorderLayout.SOUTH);
+		
+		recenter = new Timer(3, (e)->{
+			int times = 15;
+			
+			double xDist = Math.abs(_current.getX() - _current.getCenterX())/times*((_current.getX() > _current.getCenterX()) ? -1 : 1);
+			double yDist = Math.abs(_current.getY() - _current.getCenterY())/times*((_current.getY() > _current.getCenterY()) ? -1 : 1);
+			
+			_current.shift(xDist, yDist);
+		});
+		recenter.setDelay(10);
 	}
 
 	/**
@@ -195,7 +228,7 @@ public class FractalViewer extends JFrame {
 
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				System.out.println(_current.getX(e.getX()) + " " +  _current.getY(e.getY()));
+				//System.out.println(_current.getX(e.getX()) + " " + _current.getY(e.getY()));
 			}
 
 			@Override
@@ -214,11 +247,13 @@ public class FractalViewer extends JFrame {
 			@Override
 			public void mouseReleased(MouseEvent e) {
 				Point p1 = new Point(zoomer.x, zoomer.y);
-				System.out.println(zoomer.x + " " + zoomer.y);
 				Point p2 = new Point(zoomer.width + zoomer.x, zoomer.height + zoomer.y);
-				System.out.println(p2.x + " " + p2.y);
-				zoomer = null;
 				_fractalPanel.removeRect();
+				if(zoomer.width < 3 || zoomer.height < 3) {
+					_fractalPanel.updateImage(_current.getPoints());
+					return;
+				}
+				zoomer = null;
 				_current.zoom(p1, p2);
 				_fractalPanel.updateImage(_current.getPoints());
 			}
@@ -230,7 +265,6 @@ public class FractalViewer extends JFrame {
 	public void paint(Graphics g) {
 		super.paint(g);
 		if (zoomer != null) {
-			System.out.println("Zooming");
 			g.setColor(Color.BLACK);
 			g.drawRect(zoomer.x, zoomer.y, zoomer.width, zoomer.height);
 		}
@@ -387,6 +421,7 @@ public class FractalViewer extends JFrame {
 		item = new JMenuItem("Reset"); // Change number of colors
 		item.getAccessibleContext().setAccessibleDescription("basically restarts the program");
 		item.addActionListener((e) -> {
+			zoom = false;
 			Driver.reset();
 		});
 		menu.add(item); // add item
@@ -477,29 +512,57 @@ public class FractalViewer extends JFrame {
 			_fractalPanel.setIndexColorModel(ColorModelFactory.createGreenColorModel(_colors));
 			break;
 		}
-		_fractalPanel.updateImage(_current.getPoints());
+		if(!zoom) _fractalPanel.updateImage(_current.getPoints());
 		_colorNumber = num;
 	}
 
-	private void zoomOut() {
-		_current.reset();
-		// 65
+	private void zoomOut(double x, double y) {
+		zoom = true;
+		zoomIn.setEnabled(false);
+		zoomIn.setText("Zoom In");
+		//recenter.restart();
+		do {
+			try {
+				SwingUtilities.invokeAndWait(() -> {
+					_fractalPanel.updateImage(_current.getNextZoomOut());
+				});
+				zooms--;
+				int num = _colors + (zooms);
+				_current.setMax(num);
+				changeColor(num);
+				System.out.println(_colors);
+			} catch (InvocationTargetException | InterruptedException e) {
+				e.printStackTrace();
+			}
+		} while (zoom && !_current.fullView());
+		zoom = false;
+		zooms = 0;
 		_fractalPanel.updateImage(_current.getPoints());
-		if (_current.fullView())
-			zoomIn.setEnabled(true);
+		zoomIn.setEnabled(true);
 	}
 	
 	private void zoomIn(double x, double y) {
 		zoomIn.setText("Stop");
 		zoom = true;
-		while(zoom) {
+		while (zoom && (_current.getWidth() > 3.597122599785507E-14 && _current.getHeight() > 3.597122599785507E-14)) {
 			try {
 				SwingUtilities.invokeAndWait(() -> {
 					_fractalPanel.updateImage(_current.getNextZoomIn(x, y));
 				});
+				zooms++;
+				int num = _colors + (zooms);
+				_current.setMax(num);
+				changeColor(num);
+				System.out.println(_colors+zooms + " " + _current.getMaxEscapes());
 			} catch (InvocationTargetException | InterruptedException e) {
 				e.printStackTrace();
 			}
 		}
+		if(zoom){
+			this.zoomIn.setText("MAX");
+			this.zoomIn.setEnabled(false);
+		}
+		zoom = false;
+		this.zoomOut.setEnabled(true);
 	}
 }

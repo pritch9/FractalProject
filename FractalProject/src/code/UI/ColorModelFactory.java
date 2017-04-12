@@ -35,7 +35,7 @@ public class ColorModelFactory {
       greens[i] = (byte) ((rgb & 0xFF00) >> 8);
       blues[i] = (byte) (rgb & 0xFF);
     }
-    IndexColorModel retVal = new IndexColorModel(8, reds.length, reds, greens, blues);
+    IndexColorModel retVal = new IndexColorModel(16, reds.length, reds, greens, blues);
     return retVal;
   }
 
