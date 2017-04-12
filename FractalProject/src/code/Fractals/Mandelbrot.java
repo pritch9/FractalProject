@@ -16,8 +16,8 @@ public class Mandelbrot extends Fractal{
 	 */
 	public Mandelbrot(int rows, int cols){
 		super("Mandelbrot", rows, cols, 0.6, -2.15, 1.3, -1.3);
-		this.coolX = -0.7847403883059786;
-		this.coolY = 0.1307454838979776;
+		this.coolX = -0.04459784684064594;
+		this.coolY = -0.6544778177492164;
 	}
 
 	@Override

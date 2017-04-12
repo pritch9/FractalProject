@@ -59,10 +59,10 @@ public class MandelbrotTest {
 	@Test
 	public void testMaxEscapesWithNewMaxEscapeTime(){
 		_mand.setEscapeDistance(2.0);
-		_mand.setMax(135);
+		_mand.setMax(135, true);
 		int passes = _mand.getEscapeTime(0.3207031250000001, -0.07109374999999386);
 		assertEquals(135, passes);
-		_mand.setMax(255);
+		_mand.setMax(255, true);
 	}
 	
 	@Test
