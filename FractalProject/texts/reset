@@ -5,6 +5,8 @@ How to reset the zoom of the fractal.
 On the JMenuBar, there is a JMenu labeled Options. Clicking that will allow the user to 
 select the Reset JMenuItem.
 
+-placeholder-
+
 There is also another Reset button located on the Zoom Board just under the fractal display.
 
 When the user hits the reset button, either in the "Zoom Board" or in the options menu, the 
