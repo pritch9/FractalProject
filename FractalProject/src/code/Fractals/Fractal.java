@@ -7,6 +7,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+import code.UI.FractalViewer;
 import code.UI.PointRunner;
 
 public abstract class Fractal {
@@ -21,6 +22,9 @@ public abstract class Fractal {
 	 */
 	private int _rows, _cols;
 
+	/**
+	 * Point of interest :)
+	 */
 	public double coolX, coolY;
 
 	/**
@@ -38,10 +42,19 @@ public abstract class Fractal {
 	 */
 	private double _upperX, _lowerX, _upperY, _lowerY;
 
+	/**
+	 * Stores the current center point
+	 */
 	private double x, y;
 
+	/**
+	 * true if default bounds are set
+	 */
 	private boolean DEFAULTS_SET = false;
 
+	/**
+	 * Default bounds
+	 */
 	private double ORIGINAL_LOWER_X, ORIGINAL_LOWER_Y, ORIGINAL_UPPER_X, ORIGINAL_UPPER_Y;
 
 	/**
@@ -107,10 +120,13 @@ public abstract class Fractal {
 	 * 
 	 * @param max
 	 *            Maximum amount of passes
+	 * @param calc
+	 *            true if you want to recalculate points
 	 */
-	public void setMax(int max) {
+	public void setMax(int max, boolean calc) {
 		_max = max;
-		this.calculatePoints();
+		if (calc)
+			this.calculatePoints();
 	}
 
 	/**
@@ -149,7 +165,7 @@ public abstract class Fractal {
 			this.ORIGINAL_UPPER_X = _upperX;
 			this.ORIGINAL_LOWER_X = _lowerX;
 			this.ORIGINAL_UPPER_Y = _upperY;
-			this.ORIGINAL_LOWER_X = _lowerY;
+			this.ORIGINAL_LOWER_Y = _lowerY;
 			DEFAULTS_SET = true;
 		}
 	}
@@ -505,14 +521,23 @@ public abstract class Fractal {
 	 *            center X coordinate
 	 * @param y
 	 *            center X coordinate
+	 * @param move
+	 *            Specifies whether or not to translate to point.
 	 * @return the 2D-Array of escape times
 	 */
-	public int[][] getNextZoomIn(double x, double y) {
+	public int[][] getNextZoomIn(double x, double y, boolean move) {
 		double w = getWidth();
 		double h = getHeight();
 
 		w -= w * .05;
 		h -= h * .05;
+
+		if (move) {
+			double xL = (x - this.getX()) * 0.1;
+			double yL = (y - this.getY()) * 0.1;
+			x = this.getX() + xL;
+			y = this.getY() + yL;
+		}
 
 		_lowerX = x - w / 2;
 		_upperX = x + w / 2;

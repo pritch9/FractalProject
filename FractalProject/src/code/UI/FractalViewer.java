@@ -40,6 +40,16 @@ public class FractalViewer extends JFrame {
 	 * 
 	 */
 	private static final long serialVersionUID = 5603717614547419262L;
+	
+	/**
+	 * Fractal Viewer instance
+	 */
+	private static FractalViewer i;
+	/**
+	 * static getter of the FractalViewer instance
+	 * @return the FractalViewer instance
+	 */
+	public static FractalViewer get() { return i;}
 
 	/**
 	 * Menubar
@@ -71,18 +81,31 @@ public class FractalViewer extends JFrame {
 	 */
 	private int _colorNumber;
 
+	/**
+	 * Rectangle used to help with drawing when mouse is dragged
+	 */
 	private Rectangle zoomer;
 
-	private JButton zoomIn;
-	private JButton zoomOut;
-	private JButton reset;
+	/**
+	 * Zoom Board Buttons
+	 */
+	private JButton zoomIn, zoomOut, reset;
+	
+	/**
+	 * Zoom Board message, may be changed in future
+	 */
 	private JLabel message;
+	
+	/**
+	 * non-caching boolean to stop threads from running animation
+	 */
 	private volatile boolean zoom = false;
 	
 	/**
 	 * Constructor setting up FractalViewer
 	 */
 	public FractalViewer() {
+		i = this;
 		this.setResizable(false);
 		setupFractalPanel();
 		setupFractals();
@@ -114,6 +137,7 @@ public class FractalViewer extends JFrame {
 				zoom = false;
 			}
 		});
+		zoomOut.setEnabled(false);
 
 		z.add(zoomOut);
 
@@ -125,9 +149,9 @@ public class FractalViewer extends JFrame {
 				new Thread(new Runnable() {
 					public void run() {
 						if (_current.fullView()) {
-							zoomIn(_current.coolX, _current.coolY);
+							zoomIn(_current.coolX, _current.coolY, true);
 						} else
-							zoomIn(_current.getX(), _current.getY());
+							zoomIn(_current.getX(), _current.getY(), false);
 					}
 				}).start();
 			} else {
@@ -144,8 +168,9 @@ public class FractalViewer extends JFrame {
 		reset = new JButton("Reset");
 		reset.addActionListener((e) -> {
 			zoom = false;
-			_current.reset();
-			_fractalPanel.updateImage(_current.getPoints());
+			resetFractal();
+			zoomIn.setText("Zoom In");
+			zoomOut.setText("Zoom Out");
 		});
 
 		z.add(reset);
@@ -214,7 +239,7 @@ public class FractalViewer extends JFrame {
 
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				//System.out.println(_current.getX(e.getX()) + " " + _current.getY(e.getY()));
+				System.out.println(_current.getX(e.getX()) + " " + _current.getY(e.getY()));
 			}
 
 			@Override
@@ -241,6 +266,7 @@ public class FractalViewer extends JFrame {
 				}
 				zoomer = null;
 				_current.zoom(p1, p2);
+				zoomOut.setEnabled(true);
 				_fractalPanel.updateImage(_current.getPoints());
 			}
 
@@ -267,6 +293,16 @@ public class FractalViewer extends JFrame {
 
 		_menuBar.add(file); // add file menu to menubar
 
+
+		JMenuItem item1 = new JMenuItem("Restart Program"); // Change number of colors
+		item1.getAccessibleContext().setAccessibleDescription("basically restarts the program");
+		item1.addActionListener((e) -> {
+			zoom = false;
+			Driver.reset();
+		});
+		file.add(item1); // add item
+		
+		
 		JMenuItem exit = new JMenuItem("Exit");
 		file.add(exit); // add exit item to File menu
 
@@ -358,7 +394,7 @@ public class FractalViewer extends JFrame {
 																												// menu
 				try {
 					int d = Integer.parseInt(s); // convert to double
-					if (d > 0 && d <= 255) {
+					if (d > 0 /*&& d <= 255*/) {
 						changeMET(d); // if double is > 0, change max escape
 										// time
 					} else {
@@ -387,7 +423,7 @@ public class FractalViewer extends JFrame {
 																															// up
 				try {
 					int d = Integer.parseInt(s); // convert to integer
-					if (d > 0 && d < 255) {
+					if (d > 0 /*&& d < 255*/) {
 						changeColorDensity(d); // if > 0, change color density
 					} else {
 						wrong = true; // re-open pop-up
@@ -404,11 +440,11 @@ public class FractalViewer extends JFrame {
 		});
 		menu.add(item); // add item
 
-		item = new JMenuItem("Reset"); // Change number of colors
-		item.getAccessibleContext().setAccessibleDescription("basically restarts the program");
+		item = new JMenuItem("Reset Fractal"); // Change number of colors
+		item.getAccessibleContext().setAccessibleDescription("Resets the fractal");
 		item.addActionListener((e) -> {
 			zoom = false;
-			Driver.reset();
+			resetFractal();
 		});
 		menu.add(item); // add item
 		_menuBar.add(menu); // add menu
@@ -437,7 +473,7 @@ public class FractalViewer extends JFrame {
 
 		// STILL CHANGES ESCAPE DISTANCE
 		// UNSURE OF HOW TO CHANGE MAX EXCAPE TIME
-		_current.setMax(d);
+		_current.setMax(d, true);
 		_fractalPanel.updateImage(_current.getPoints());
 	}
 
@@ -447,7 +483,7 @@ public class FractalViewer extends JFrame {
 	 * @param d
 	 *            new number of colors
 	 */
-	private void changeColorDensity(int d) {
+	public void changeColorDensity(int d) {
 		_colors = d;
 		changeColor(_colorNumber);
 		_fractalPanel.updateImage(_current.getPoints());
@@ -524,6 +560,8 @@ public class FractalViewer extends JFrame {
 		zoom = false;
 		_fractalPanel.updateImage(_current.getPoints());
 		zoomIn.setEnabled(true);
+		zoomOut.setText("Zoom Out");
+		zoomOut.setEnabled(false);
 	}
 
 	/**
@@ -531,13 +569,15 @@ public class FractalViewer extends JFrame {
 	 * @param x x value
 	 * @param y y value
 	 */
-	private void zoomIn(double x, double y) {
+	private void zoomIn(double x, double y, boolean move) {
 		zoomIn.setText("Stop");
 		zoom = true;
-		while (zoom && (_current.getWidth() > 3.597122599785507E-14 && _current.getHeight() > 3.597122599785507E-14)) {
+		double minW = _current.getFullWidth()*1.0E-10;
+		double minH = _current.getFullHeight()*1.0E-10;
+		while (zoom && (_current.getWidth() > minW && _current.getHeight() > minH)) {
 			try {
 				SwingUtilities.invokeAndWait(() -> {
-					_fractalPanel.updateImage(_current.getNextZoomIn(x, y));
+					_fractalPanel.updateImage(_current.getNextZoomIn(x, y, move));
 				});
 			} catch (InvocationTargetException | InterruptedException e) {
 				e.printStackTrace();
@@ -549,5 +589,13 @@ public class FractalViewer extends JFrame {
 		}
 		zoom = false;
 		this.zoomOut.setEnabled(true);
+	}
+	
+	/**
+	 * Resets the current fractal to original bounds
+	 */
+	private void resetFractal(){
+		_current.reset();
+		_fractalPanel.updateImage(_current.getPoints());
 	}
 }
