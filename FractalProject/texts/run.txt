@@ -5,14 +5,15 @@ How to know if the program is running correctly.
 
 Find Driver.java in the code.UI package and runs it as a Java Application.
 
-A JFrame with a JMenuBar and JPanel should pop up, displaying the Mandelbrot Set Fractal
-with rainbow colors.
+A JFrame with a JMenuBar and JPanels should pop up, displaying the Mandelbrot Set Fractal
+with rainbow colors along with a Zoom Board below it.
 
 On the JMenuBar there should be 4 JMenus, which are File, Fractals, Colors, and Options
 respectively.
 
-Clicking on File will cause the JMenuItem Exit to appear. Selecting Exit will terminate the
-program immediately.
+Clicking on File will cause the JMenuItems Restart Program and Exit to appear. The program 
+will restart with default values when the user selects the Restart Program JMenuItem while 
+selecting Exit will terminate the program immediately.
 
 Clicking on Fractals will allow the user to select from 4 JMenuItems, which are Mandelbrot
 Set, Julia Set, Burning Ship Set, and Multibrot Set. The display will then update to show 
@@ -25,9 +26,9 @@ Clicking on Options will allow the user to change Escape Distance, Max Escape Ti
 Color Density. There is also a Reset JMenuItem to allow the user to reset the zoom of the 
 fractal. See update.txt and reset.txt for more details.
 
-For Zooming:  When a user clicks and drags on the fractal, a red box will be drawn as the 
-user moves their mouse. When the user releases the mouse button, the fractal will 
-regenerate with the bounds set by the square box.
+For Zooming:  When a user clicks and drags from top left to bottom right on the fractal, a 
+red box will be drawn as the user moves their mouse. When the user releases the mouse 
+button, the fractal will regenerate with the bounds set by the square box.
 
 On the bottom of the GUI, is a zoom menu with 3 buttons:
 	- "Zoom Out": which zooms out from the zoomed in point.
