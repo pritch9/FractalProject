@@ -508,6 +508,8 @@ public abstract class Fractal {
 			this._upperY += change;
 			this._lowerY = this.ORIGINAL_LOWER_Y;
 		}
+		
+		if(fullView()) reset();
 
 		this.calculatePoints();
 		return this._points;

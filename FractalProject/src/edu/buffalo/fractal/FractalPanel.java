@@ -73,13 +73,13 @@ public class FractalPanel extends JPanel {
 
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
-		/*if ((this.fractal.getWidth() != getWidth()) || (this.fractal.getHeight() != getHeight())) {
+		if ((this.fractal.getWidth() != getWidth()) || (this.fractal.getHeight() != getHeight())) {
 			System.out.println("scale");
 			Image drawMe = this.fractal.getScaledInstance(getWidth(), getHeight(), 4);
 			g.drawImage(drawMe, 0, 0, Color.LIGHT_GRAY, null);
-		} else {*/
+		} else {
 			g.drawImage(this.fractal, 0, 0, Color.LIGHT_GRAY, null);
-		//}
+		}
 
 		if (rect != null) {
 			g.setColor(Color.RED);
