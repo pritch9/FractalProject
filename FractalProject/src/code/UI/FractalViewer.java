@@ -548,7 +548,7 @@ public class FractalViewer extends JFrame {
 		zoomIn.setEnabled(false);
 		zoomIn.setText("Zoom In");
 		//recenter.restart();
-		do {
+		while (zoom && !_current.fullView()){
 			try {
 				SwingUtilities.invokeAndWait(() -> {
 					_fractalPanel.updateImage(_current.getNextZoomOut());
@@ -556,7 +556,7 @@ public class FractalViewer extends JFrame {
 			} catch (InvocationTargetException | InterruptedException e) {
 				e.printStackTrace();
 			}
-		} while (zoom && !_current.fullView());
+		}
 		zoom = false;
 		_fractalPanel.updateImage(_current.getPoints());
 		zoomIn.setEnabled(true);
