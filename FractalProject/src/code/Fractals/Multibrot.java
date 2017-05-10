@@ -1,12 +1,16 @@
 package code.Fractals;
 
+import java.awt.Dimension;
+
+import code.UI.FractalViewer;
+
 public class Multibrot extends Fractal{
 	
 	/**
 	 * Most basic constructor
 	 */
 	public Multibrot(){
-		this(512, 512);
+		this(new Dimension(512,512));
 	}
 	
 	/**
@@ -14,8 +18,8 @@ public class Multibrot extends Fractal{
 	 * @param rows number of rows
 	 * @param cols number of columns
 	 */
-	public Multibrot(int rows, int cols){
-		super("Multibrot", rows, cols,-1,1,-1.3,1.3);
+	public Multibrot(Dimension resolution){
+		super("Multibrot", resolution,-1,1,-1.3,1.3, (FractalViewer.get() != null));
 		this.coolX = -0.42777722573108784;
 		this.coolY = -0.012390222129229113;
 	}
@@ -33,7 +37,7 @@ public class Multibrot extends Fractal{
 		
 		dist = Math.sqrt(tX*tX + tY*tY); // Use math to find distance from 0
 		
-		while(dist <= this.getEscapeDistance() && passes < this.getMaxEscapes()){
+		while(dist <= this.getMaxEscapeDistance() && passes < this.getMaxEscapeTime()){
 			tmp = tX*tX*tX - (3.0*tX*tY*tY) + xCalc; // TEMP X: x' = x^2 - y^2 + (original x value)
 			tY = (3.0 * tX*tX * tY) - (tY*tY*tY) + yCalc; // y' = 2xy + (original y value)
 			tX = tmp; // set X to TEMP X

@@ -1,12 +1,16 @@
 package code.Fractals;
 
+import java.awt.Dimension;
+
+import code.UI.FractalViewer;
+
 public class BurningShip extends Fractal{
 	
 	/**
 	 * Most basic constructor
 	 */
 	public BurningShip(){
-		this(512, 512);
+		this(new Dimension(512,512));
 	}
 	
 	/**
@@ -14,8 +18,8 @@ public class BurningShip extends Fractal{
 	 * @param rows number of rows
 	 * @param cols number of columns
 	 */
-	public BurningShip(int rows, int cols){
-		super("Burning Ship", rows, cols, -1.8, -1.7, -0.08, 0.025);
+	public BurningShip(Dimension resolution){
+		super("Burning Ship", resolution, -1.8, -1.7, -0.08, 0.025, (FractalViewer.get() != null));
 		this.coolX = -1.748492062910211;
 		this.coolY = -0.022531386833453692;
 	}
@@ -29,7 +33,7 @@ public class BurningShip extends Fractal{
 
 		dist = Math.sqrt(tX * tX + tY * tY); // Calculate distance from origin
 
-		while (dist <= this.getEscapeDistance() && passes < this.getMaxEscapes()) {
+		while (dist <= this.getMaxEscapeDistance() && passes < this.getMaxEscapeTime()) {
 			tmp = tX * tX - tY * tY + xCalc; // TEMP X: x' = x^2 - y^2 +
 												// (original x value)
 			tY = Math.abs(2.0 * tX * tY) + yCalc; // y' = Math.abs(2xy) +

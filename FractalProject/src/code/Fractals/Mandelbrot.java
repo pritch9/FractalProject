@@ -1,12 +1,16 @@
 package code.Fractals;
 
+import java.awt.Dimension;
+
+import code.UI.FractalViewer;
+
 public class Mandelbrot extends Fractal{
 	
 	/**
 	 * Most basic constructor
 	 */
 	public Mandelbrot(){
-		this(512, 512);
+		this(new Dimension(512,512));
 	}
 	
 	/**
@@ -14,8 +18,8 @@ public class Mandelbrot extends Fractal{
 	 * @param rows number of rows
 	 * @param cols number of columns
 	 */
-	public Mandelbrot(int rows, int cols){
-		super("Mandelbrot", rows, cols, 0.6, -2.15, 1.3, -1.3);
+	public Mandelbrot(Dimension resolution){
+		super("Mandelbrot", resolution, 0.6, -2.15, 1.3, -1.3, (FractalViewer.get() != null));
 		this.coolX = -0.04459784684064594;
 		this.coolY = -0.6544778177492164;
 	}
@@ -32,11 +36,12 @@ public class Mandelbrot extends Fractal{
 		
 		dist = Math.sqrt(xCalc*xCalc + yCalc*yCalc); // (0,0) has a distance of 0 from (0,0)
 		
-		while(dist <= this.getEscapeDistance() && passes < this.getMaxEscapes()){
+		while(dist <= this.getMaxEscapeDistance() && passes < this.getMaxEscapeTime()){
 			tmp = tX*tX - tY*tY + xCalc; // TEMP X: x' = x^2 - y^2 + (original x value)
 			tY = 2.0 * tX * tY + yCalc; // y' = 2xy + (original y value)
 			tX = tmp; // set X to TEMP X
 			dist = Math.sqrt(tX*tX + tY*tY); // recalculate distance
+			
 			passes++; // add a pass
 		}
 		return passes;

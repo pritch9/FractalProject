@@ -1,4 +1,6 @@
-package code.UI;
+package code.UI.threading;
+
+import java.awt.Dimension;
 
 import code.Fractals.Fractal;
 
@@ -7,17 +9,18 @@ public class PointRunner implements Runnable {
 	/**
 	 * 2D-array of points being calculated by the thread
 	 */
-	private int[][] _points;
+	private int[][] points;
 
 	/**
 	 * Fractal reference
 	 */
-	private Fractal _fractal;
+	private Fractal fractal;
 
 	/**
 	 * number of columns accounted for
 	 */
 	private int cs;
+	private int cols;
 
 	/**
 	 * id number of the thread
@@ -36,11 +39,12 @@ public class PointRunner implements Runnable {
 	 * @param id
 	 *            id number of the thread for this instantiation
 	 */
-	public PointRunner(Fractal fractal, int cols, int threads, int id) {
-		cs = cols / threads;
+	public PointRunner(Fractal fractal, Dimension resolution, int threads, int id) {
+		cs = resolution.height / threads;
 		this.id = id;
-		_fractal = fractal;
-		_points = new int[cs][_fractal.getNumRows()];
+		this.fractal = fractal;
+		this.cols = resolution.width;
+		points = new int[cs][cols];
 	}
 
 	/**
@@ -51,15 +55,15 @@ public class PointRunner implements Runnable {
 	@Override
 	public void run() {
 		double xCalc, yCalc; // deine calculation local variables
-		for (int cols = 0; cols < cs; cols++) { // x
-			for (int rows = 0; rows < _fractal.getNumRows(); rows++) { // y
+		for (int row = 0; row < cs; row++) { // y
+			for (int col = 0; col < cols; col++) { // x
 				// convert rows and cols to cartesian plot
-				xCalc = _fractal.getX(cols + (id * cs));
-				yCalc = _fractal.getY(rows);
+				xCalc = fractal.getX((cs * id) + row);
+				yCalc = fractal.getY(col);
+				
+				int passes = fractal.calculate(xCalc, yCalc);
 
-				int passes = _fractal.calculate(xCalc, yCalc);
-
-				_points[cols][rows] = passes; // When the while loop
+				points[row][col] = passes; // When the while loop
 												// escapes, set
 												// the passes in the points
 												// 2D
@@ -73,7 +77,7 @@ public class PointRunner implements Runnable {
 	 * @return points the 2D array of escape times.
 	 */
 	public int[][] getPoints() {
-		return this._points;
+		return this.points;
 	}
 
 }

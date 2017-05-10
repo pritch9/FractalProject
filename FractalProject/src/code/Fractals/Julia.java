@@ -1,40 +1,79 @@
 package code.Fractals;
 
+import java.awt.Dimension;
+import java.awt.Rectangle;
+import java.lang.reflect.InvocationTargetException;
+
+import javax.swing.SwingUtilities;
+
+import code.UI.FractalViewer;
+
 public class Julia extends Fractal {
-	
+
+	private double pointX = 0.188887, pointY = -0.72689;
+	private volatile boolean reset = false;
+
 	/**
 	 * Most basic constructor
 	 */
-	public Julia(){
-		this(512, 512);
+	public Julia() {
+		this(new Dimension(512, 512));
 	}
-	
+
 	/**
 	 * Constructor with dimension parameters
-	 * @param rows number of rows
-	 * @param cols number of columns
+	 * 
+	 * @param rows
+	 *            number of rows
+	 * @param cols
+	 *            number of columns
 	 */
-	public Julia(int rows, int cols){
-		super("Julia", rows, cols, 1.7,-1.7,1.0,-1.0);
+	public Julia(Dimension resolution) {
+		super("Julia", resolution, 1.7, -1.7, 1.0, -1.0, (FractalViewer.get() != null));
 		this.coolX = -0.09998952442329354;
 		this.coolY = 0.6397321930046009;
 	}
-	
-	public int calculate(double xCalc, double yCalc){
+
+	public int calculate(double xCalc, double yCalc) {
 		double tX, tY, tmp;
 		double dist;
 		tX = xCalc;
 		tY = yCalc;
-		
+
 		int passes = 0;
-		dist = Math.sqrt(tX*tX + tY*tY);
-		while(dist <= this.getEscapeDistance() && passes < this.getMaxEscapes()){
-			tmp = tX*tX - tY*tY + -0.72689;
-			tY = 2.0*tX*tY + 0.188887;
+		dist = Math.sqrt(tX * tX + tY * tY);
+		while (dist <= getMaxEscapeDistance() && passes < getMaxEscapeTime()) {
+			tmp = tX * tX - tY * tY + pointY;
+			tY = 2.0 * tX * tY + pointX;
 			tX = tmp;
-			dist = Math.sqrt(tX*tX + tY*tY);
+			dist = Math.sqrt(tX * tX + tY * tY);
 			passes++;
 		}
 		return passes;
+	}
+
+	@Override
+	public void reset() {
+		if (reset) {
+			pointX = 0.188887;
+			pointY = -0.72689;
+		} else {
+			System.out.println("Click reset again to go back to original Julia Set");
+			reset = true;
+		}
+		super.reset();
+	}
+
+	@Override
+	public void zoom(Rectangle rectangle) {
+		super.zoom(rectangle);
+		reset = false;
+	}
+
+	public void animate(int x, int y) {
+		reset = false;
+		this.pointX = getX(x);
+		this.pointY = getY(y);
+		SwingUtilities.invokeLater(() -> calculateAndBlock());
 	}
 }
