@@ -4,21 +4,23 @@ import java.awt.Dimension;
 
 import code.UI.FractalViewer;
 
-public class BurningShip extends Fractal{
-	
+public class BurningShip extends Fractal {
+
 	/**
 	 * Most basic constructor
 	 */
-	public BurningShip(){
-		this(new Dimension(512,512));
+	public BurningShip() {
+		this(new Dimension(512, 512));
 	}
-	
+
 	/**
 	 * Constructor with dimension parameters
-	 * @param rows number of rows
-	 * @param cols number of columns
+	 * 
+	 * @param resolution
+	 *            The pixel resolution used to generate fractal
+	 * 
 	 */
-	public BurningShip(Dimension resolution){
+	public BurningShip(Dimension resolution) {
 		super("Burning Ship", resolution, -1.8, -1.7, -0.08, 0.025, (FractalViewer.get() != null));
 		this.coolX = -1.748492062910211;
 		this.coolY = -0.022531386833453692;
@@ -44,5 +46,5 @@ public class BurningShip extends Fractal{
 		}
 		return passes;
 	}
-	
+
 }

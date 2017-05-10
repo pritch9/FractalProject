@@ -97,14 +97,15 @@ public class ColorModelFactory {
 	 * @return Color model that shows all of the different possible shades of
 	 *         green.
 	 */
-	public static IndexColorModel createGreenColorModel(int numColors) {
+	public static IndexColorModel createRainbow2ColorModel(int numColors) {
 		byte[] reds = new byte[numColors];
 		byte[] greens = new byte[numColors];
 		byte[] blues = new byte[numColors];
 		for (int i = 0; i < reds.length - 1; i++) {
-			blues[i] = 0;
-			greens[i] = (byte) ((Math.log10(i) / Math.log10(blues.length)) * 256);
-			reds[i] = 0;
+			int rgb = Color.HSBtoRGB(i / ((float) reds.length - 1), 0.7F, 1);
+			blues[i] = (byte) ((rgb & 0xFF0000) >> 16);
+			greens[i] = (byte) ((rgb & 0xFF00) >> 8);
+			reds[i] = (byte) (rgb & 0xFF);
 		}
 		IndexColorModel retVal = new IndexColorModel(bits, reds.length, reds, greens, blues);
 		return retVal;

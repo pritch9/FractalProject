@@ -4,15 +4,25 @@ import javax.swing.SwingUtilities;
 
 public class Driver {
 
-	private static FractalViewer _fractalViewer;
+	/**
+	 * Le fractal viewer instance
+	 */
+	private static FractalViewer fractalViewer;
 	
+	/**
+	 * HELL YEAH
+	 * @param args
+	 */
 	public static void main(String[] args) {
-		SwingUtilities.invokeLater(() -> _fractalViewer = new FractalViewer()); // initial Fractal Viewer which does the rest
+		SwingUtilities.invokeLater(() -> fractalViewer = new FractalViewer()); // initial Fractal Viewer which does the rest
 	}
 
+	/**
+	 * Reset Program
+	 */
 	public static void reset() {
-		_fractalViewer.dispose();
-		_fractalViewer = new FractalViewer();
+		fractalViewer.dispose();
+		fractalViewer = new FractalViewer();
 	}
 
 }

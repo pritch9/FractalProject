@@ -13,6 +13,7 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
+@SuppressWarnings("serial")
 public class FractalPanel extends JPanel {
 	public static enum SaveFormat {
 		GIF, PNG, JPG;
@@ -87,11 +88,18 @@ public class FractalPanel extends JPanel {
 		}
 	}
 
+	/**
+	 * Added to draw the zoom rectangle when FractalPanel paints
+	 * @param r Rectangle to be drawn
+	 */
 	public void drawRectangle(Rectangle r) {
 		rect = r;
 		repaint();
 	}
 
+	/**
+	 * Remove the zoom rectange
+	 */
 	public void removeRect() {
 		rect = null;
 	}

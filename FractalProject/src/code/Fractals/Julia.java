@@ -2,7 +2,6 @@ package code.Fractals;
 
 import java.awt.Dimension;
 import java.awt.Rectangle;
-import java.lang.reflect.InvocationTargetException;
 
 import javax.swing.SwingUtilities;
 
@@ -52,6 +51,9 @@ public class Julia extends Fractal {
 		return passes;
 	}
 
+	/**
+	 * Julia needs a special reset.  First click is a soft reset, second is a hard reset.  The hard reset brings the fractal generation point back to the origina.
+	 */
 	@Override
 	public void reset() {
 		if (reset) {
@@ -65,15 +67,20 @@ public class Julia extends Fractal {
 	}
 
 	@Override
-	public void zoom(Rectangle rectangle) {
-		super.zoom(rectangle);
-		reset = false;
+	public boolean zoom(Rectangle rectangle) {
+		reset = false; // allows for soft reset
+		return super.zoom(rectangle);
 	}
 
+	/**
+	 * Allows user to click around and change the generation point of Julia.
+	 * @param x New X column
+	 * @param y New Y row
+	 */
 	public void animate(int x, int y) {
-		reset = false;
-		this.pointX = getX(x);
-		this.pointY = getY(y);
-		SwingUtilities.invokeLater(() -> calculateAndBlock());
+		reset = false; // allows for soft reset
+		this.pointX = getX(x); // new point X
+		this.pointY = getY(y); // new point Y
+		SwingUtilities.invokeLater(() -> calculateAndBlock()); // block
 	}
 }

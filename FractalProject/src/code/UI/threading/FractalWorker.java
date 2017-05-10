@@ -11,6 +11,12 @@ public class FractalWorker extends SwingWorker<WorkerResult, Void>{
 	private int startRow;
 	private int numberOfRows;
 	
+	/**
+	 * Constructor
+	 * @param fractal Fractal being generated
+	 * @param startRow Number of the row started on
+	 * @param numberOfRows Number of rows being calculated
+	 */
 	public FractalWorker(Fractal fractal, int startRow, int numberOfRows){
 		this.fractal = fractal;
 		this.startRow = startRow;
@@ -19,7 +25,7 @@ public class FractalWorker extends SwingWorker<WorkerResult, Void>{
 
 	@Override
 	protected WorkerResult doInBackground() throws Exception {
-		int[][] retVal = new int[numberOfRows][fractal.getResolution().width];
+		int[][] retVal = new int[numberOfRows][fractal.getResolution().width]; // return array
 		double xCalc, yCalc; // deine calculation local variables
 		for (int row = 0; row < numberOfRows; row++) { // x
 			for (int col = 0; col < fractal.getResolution().width; col++) { // y
@@ -36,8 +42,7 @@ public class FractalWorker extends SwingWorker<WorkerResult, Void>{
 												// array
 			}
 		}
-		WorkerResult p = new WorkerResult(startRow, retVal);
-		return p;
+		return new WorkerResult(startRow, retVal);
 	}
 
 }

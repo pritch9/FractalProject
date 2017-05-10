@@ -13,9 +13,22 @@ public class MouseListener implements MouseMotionListener, java.awt.event.MouseL
 
 	private FractalViewer fractalViewer;
 	private FractalPanel fractalPanel;
+	
+	/**
+	 * Zoom rectangle
+	 */
 	private Rectangle zoomer;
+	
+	/**
+	 * True if julia center animation thing is enabled
+	 */
 	private boolean julia = false;
 
+	/**
+	 * Constructor
+	 * @param viewer FractalViewer instance
+	 * @param panel FractalPanel being observed
+	 */
 	public MouseListener(FractalViewer viewer, FractalPanel panel) {
 		fractalPanel = panel;
 		fractalViewer = viewer;
@@ -23,10 +36,13 @@ public class MouseListener implements MouseMotionListener, java.awt.event.MouseL
 
 	@Override
 	public void mouseDragged(MouseEvent arg0) {
-		if (!julia) {
+		if (!julia) { // not julia enabled
+			// get mouse coords
 			int x = arg0.getX();
 			int y = arg0.getY();
 			int g = 0;
+			
+			// find min width or height
 			if (x > y) {
 				g = x - zoomer.x;
 			} else {
@@ -34,11 +50,13 @@ public class MouseListener implements MouseMotionListener, java.awt.event.MouseL
 			}
 			g = Math.abs(g);
 
+			// set width/height to min width or height
 			zoomer.width = (x > zoomer.x) ? g : -g;
 			zoomer.height = (y > zoomer.y) ? g : -g;
-			fractalPanel.drawRectangle(zoomer);
+			
+			fractalPanel.drawRectangle(zoomer); // draw rectangle on GUI
 		}
-		else
+		else // do the julia thing
 			((Julia) fractalViewer.getCurrentFractal()).animate(arg0.getX(), arg0.getY());
 
 	}
@@ -61,26 +79,36 @@ public class MouseListener implements MouseMotionListener, java.awt.event.MouseL
 
 	@Override
 	public void mousePressed(MouseEvent e) {
-		if (!julia)
+		if (!julia) // start rectangle if not julia thingy
 			zoomer = new Rectangle(e.getPoint());
-		else
+		else // do julia thingy
 			((Julia) fractalViewer.getCurrentFractal()).animate(e.getX(), e.getY());
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
-		if (!julia) {
-			fractalPanel.removeRect();
+		if (!julia) { // if not julia thingy
+			fractalPanel.removeRect(); // stop displaying the rectangle
+			// do not bother if rectangle is too tiny
 			if (Math.abs(zoomer.width) < 3 || Math.abs(zoomer.height) < 3) {
 				fractalPanel.repaint();
 				return;
 			}
-			fractalViewer.getCurrentFractal().zoom(zoomer);
-			zoomer = null;
-			fractalViewer.changeZoomButtonState(ZoomState.ZOOM_MID);
+			// try zooming
+			if(fractalViewer.getCurrentFractal().zoom(zoomer)){
+				// change zoom state to mid
+				fractalViewer.changeZoomButtonState(ZoomState.ZOOM_MID);
+			} else {
+				fractalViewer.changeZoomButtonState(ZoomState.ZOOM_IN_MAX);
+			}
+			zoomer = null; // delete rectangle object
 		}
 	}
 
+	/**
+	 * Tells the mouse listener whether or not julia animation is intended to run
+	 * @param b True if julia thing should be animated
+	 */
 	public void setJuliaEnabled(boolean b) {
 		julia = b;
 	}
